@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "WebAPI\WebAPI.csproj", "{E66F4E21-80C6-468C-B2DB-BFE61BAC1C88}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScheduleJob", "ScheduleJob\ScheduleJob.csproj", "{F92B5453-161F-482F-B066-7C462C3A43EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{E66F4E21-80C6-468C-B2DB-BFE61BAC1C88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E66F4E21-80C6-468C-B2DB-BFE61BAC1C88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E66F4E21-80C6-468C-B2DB-BFE61BAC1C88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F92B5453-161F-482F-B066-7C462C3A43EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F92B5453-161F-482F-B066-7C462C3A43EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F92B5453-161F-482F-B066-7C462C3A43EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F92B5453-161F-482F-B066-7C462C3A43EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
