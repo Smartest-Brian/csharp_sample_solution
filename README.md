@@ -1,6 +1,8 @@
 # csharp_sample_solution
 
 
+## create Empty Solution
+
 ## create WebAPI controller project
 
 mkdir WebAPI
