@@ -4,6 +4,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "WebAPI\WebAPI.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScheduleJob", "ScheduleJob\ScheduleJob.csproj", "{F92B5453-161F-482F-B066-7C462C3A43EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQL", "GraphQL\GraphQL.csproj", "{2DDD497E-E9FD-4687-9747-C0C8BAC735FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E71BFD29-8C2D-400C-B531-D7358858625B}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +25,9 @@ Global
 		{F92B5453-161F-482F-B066-7C462C3A43EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F92B5453-161F-482F-B066-7C462C3A43EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F92B5453-161F-482F-B066-7C462C3A43EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DDD497E-E9FD-4687-9747-C0C8BAC735FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DDD497E-E9FD-4687-9747-C0C8BAC735FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DDD497E-E9FD-4687-9747-C0C8BAC735FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DDD497E-E9FD-4687-9747-C0C8BAC735FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
