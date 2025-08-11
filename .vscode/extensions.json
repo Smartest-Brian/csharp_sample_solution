@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "ms-dotnettools.csdevkit", // C# Dev Kit
+        "ms-dotnettools.csharp", // C# language support
+        "ms-dotnettools.vscode-dotnet-runtime", // .NET Runtime Install Tool
+        "EditorConfig.EditorConfig", // EditorConfig
+    ]
+}
