@@ -1,4 +1,6 @@
 using Models;
+using HotChocolate;
+using Microsoft.Extensions.Logging;
 
 namespace GraphQL;
 
@@ -12,6 +14,9 @@ public class Query
     /// <summary>
     /// 取回目前所有訊息
     /// </summary>
-    public IEnumerable<Models.Message> GetMessages()
-        => MessageStore.Messages;
+    public IEnumerable<Models.Message> GetMessages([Service] ILogger<Query> logger)
+    {
+        logger.LogInformation("Fetching messages");
+        return MessageStore.Messages;
+    }
 }
