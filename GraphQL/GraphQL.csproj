@@ -15,8 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="HotChocolate.AspNetCore" Version="16.0.0-p.6.13" />
-      <PackageReference Include="HotChocolate.Subscriptions.InMemory" Version="16.0.0-p.6.13" />
+      <PackageReference Include="HotChocolate.AspNetCore" Version="13.9.14" />
+      <PackageReference Include="HotChocolate.Subscriptions.InMemory" Version="13.9.14" />
     </ItemGroup>
 
 </Project>
