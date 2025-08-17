@@ -19,7 +19,7 @@ builder.Services.AddQuartz(q =>
         .ForJob(jobKey)
         .WithIdentity($"{nameof(ClockJob)}-trigger")
         .WithSimpleSchedule(x => x
-            .WithInterval(TimeSpan.FromHours(1))
+            .WithInterval(TimeSpan.FromSeconds(1))
             .RepeatForever()));
 });
 

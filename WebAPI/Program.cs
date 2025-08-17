@@ -1,6 +1,5 @@
 using Microsoft.OpenApi.Models;
 using WebAPI.Middleware;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,7 +46,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseMiddleware<JwtTokenMiddleware>();
+app.UseMiddleware<LogIdMiddleware>();
 
 app.UseAuthorization();
 
