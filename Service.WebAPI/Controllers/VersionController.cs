@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 
+namespace Service.WebAPI.Controllers;
+
 [ApiController]
-[Route("version")]          // → /version
+[Route("version")] // → /version
 public class VersionController : ControllerBase
 {
     [HttpGet]
