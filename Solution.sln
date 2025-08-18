@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.WebAPI", "Service.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.GraphQL", "Service.GraphQL\Service.GraphQL.csproj", "{C9426453-DDD9-47BC-9241-C24F3C890629}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Job", "Service.Job\Service.Job.csproj", "{A0769836-788F-45E7-BCC7-BF2B0B078A5A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.ScheduleJob", "Service.ScheduleJob\Service.ScheduleJob.csproj", "{D918C945-9CCE-49FE-9E91-2F59525DD1A1}"
 EndProject
 Global
@@ -61,18 +59,6 @@ Global
 		{C9426453-DDD9-47BC-9241-C24F3C890629}.Release|x64.Build.0 = Release|Any CPU
 		{C9426453-DDD9-47BC-9241-C24F3C890629}.Release|x86.ActiveCfg = Release|Any CPU
 		{C9426453-DDD9-47BC-9241-C24F3C890629}.Release|x86.Build.0 = Release|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Debug|x64.Build.0 = Debug|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Debug|x86.Build.0 = Debug|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Release|x64.ActiveCfg = Release|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Release|x64.Build.0 = Release|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Release|x86.ActiveCfg = Release|Any CPU
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A}.Release|x86.Build.0 = Release|Any CPU
 		{D918C945-9CCE-49FE-9E91-2F59525DD1A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D918C945-9CCE-49FE-9E91-2F59525DD1A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D918C945-9CCE-49FE-9E91-2F59525DD1A1}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -90,6 +76,5 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A0769836-788F-45E7-BCC7-BF2B0B078A5A} = {E71BFD29-8C2D-400C-B531-D7358858625B}
 	EndGlobalSection
 EndGlobal
