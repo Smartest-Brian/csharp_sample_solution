@@ -1,4 +1,4 @@
-namespace Models;
+namespace Service.GraphQL.Models;
 
 public record Message(int Id, string Text, DateTime CreatedAtUtc);
 

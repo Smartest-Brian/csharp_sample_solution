@@ -1,6 +1,6 @@
 using HotChocolate.Subscriptions;
 
-namespace GraphQL;
+namespace Service.GraphQL.GraphQL;
 
 public class Mutation
 {

@@ -1,37 +1,66 @@
 # csharp_sample_solution
 
-## create Empty Solution
+---
 
-## create WebAPI controller project
+# command line
 
-mkdir WebAPI
+## create Solution
 
-cd WebAPI
+dotnet new sln -n Solution
 
-dotnet new webapi --use-controllers
+## create service WebAPI controller project
+
+dotnet new webapi -n Service.WebAPI --use-controllers -f net9.0
+
+dotnet new webapi -n Service.GraphQL -f net9.0
+
+dotnet new worker -n Service.ScheduleJob -f net9.0
+
+## create library
+
+dotnet new classlib -n Library.Core -f net9.0
+
+## add project to solution
+
+dotnet sln Solution.sln add Service.WebAPI/Service.WebAPI.csproj
+
+dotnet sln Solution.sln add Library.Core/Library.Core.csproj
+
+## reference
+
+dotnet add Service.WebAPI/Service.WebAPI.csproj reference Library.Core/Library.Core.csproj
+
+---
 
 ## docker
 
-docker build -t webapi -f WebAPI/Dockerfile .
+docker build -t webapi -f Service.WebAPI/Dockerfile .
 
-docker build -t schedulejob -f ScheduleJob/Dockerfile .
+docker build -t schedulejob -f Service.Job/Dockerfile .
 
 docker run -p 8080:8080 webapi
 
-## WebAPI
+---
+# describe
+
+## Service.WebAPI
+
+dotnet add package Swashbuckle.AspNetCore -v 6.7.0
 
 使用 Controller 執行 RESTful API
 
-## ScheduleJob
+## Service.ScheduleJob
 
 使用 Quartz 實現 Job
 
-## GraphQL
+## Service.GraphQL
+
+dotnet add package HotChocolate.AspNetCore --version 13.9.14
+
+dotnet add package HotChocolate.Subscriptions.InMemory --version 13.9.14
 
 如果要佈署到多執行個體，請把上面的 InMemory 換成 Redis 或其他 provider，並在程式碼中使用相對應的 AddRedisSubscriptions()
 等方法。
-
-### export schema
 
 
 

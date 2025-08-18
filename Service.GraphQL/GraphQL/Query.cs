@@ -1,6 +1,6 @@
-using Models;
+using Service.GraphQL.Models;
 
-namespace GraphQL;
+namespace Service.GraphQL.GraphQL;
 
 public class Query
 {
