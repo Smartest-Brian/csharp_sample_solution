@@ -34,13 +34,30 @@ dotnet add Service.WebAPI/Service.WebAPI.csproj reference Library.Core/Library.C
 
 ## docker
 
-docker build -t webapi -f Service.WebAPI/Dockerfile .
+docker build -t webapi -f src/Services/Service.WebAPI/Dockerfile .
 
-docker build -t schedulejob -f Service.Job/Dockerfile .
+docker build -t schedulejob -f src/Services/Service.Job/Dockerfile .
 
 docker run -p 8080:8080 webapi
 
+## docker-compose
+
+### build container
+
+docker-compose up -d
+
+### clean container
+
+docker-compose down
+
+If you want to clean volume use `-v`
+
+### clean completely (image、volume、network) include other images
+
+docker system prune -a --volumes
+
 ---
+
 # describe
 
 ## Service.WebAPI
