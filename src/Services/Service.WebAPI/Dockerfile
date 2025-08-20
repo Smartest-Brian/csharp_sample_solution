@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /workspace
 COPY ["src/Services/Service.WebAPI/Service.WebAPI.csproj", "src/Services/Service.WebAPI/"]
-COPY ["src/Librarys/Library.Core/Library.Core.csproj", "src/Librarys/Library.Core/"]
+COPY ["src/Librarys/", "src/Librarys/"]
 RUN dotnet restore "src/Services/Service.WebAPI/Service.WebAPI.csproj"
 COPY . .
 WORKDIR "/workspace/src/Services/Service.WebAPI"
