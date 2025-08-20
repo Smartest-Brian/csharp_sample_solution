@@ -20,6 +20,8 @@ dotnet new worker -n Service.ScheduleJob -f net9.0
 
 dotnet new classlib -n Library.Core -f net9.0
 
+dotnet new classlib -n Library.Database
+
 ## add project to solution
 
 dotnet sln Solution.sln add Service.WebAPI/Service.WebAPI.csproj
@@ -48,9 +50,13 @@ docker-compose up -d
 
 ### clean container
 
+停止並刪除容器（保留 volume 與網路）
+
 docker-compose down
 
-If you want to clean volume use `-v`
+停止並刪除容器 + volume（清空資料）
+
+docker-compose down -v
 
 ### clean completely (image、volume、network) include other images
 
