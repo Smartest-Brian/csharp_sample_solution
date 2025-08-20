@@ -10,25 +10,35 @@ dotnet new sln -n Solution
 
 ## create service WebAPI controller project
 
-dotnet new webapi -n Service.WebAPI --use-controllers -f net9.0
+dotnet new webapi -n Service.WebAPI --use-controllers -o src/Services/Service.WebAPI -f net9.0
 
-dotnet new webapi -n Service.GraphQL -f net9.0
+dotnet new webapi -n Service.GraphQL -o src/Services/Service.GraphQL -f net9.0
 
-dotnet new worker -n Service.ScheduleJob -f net9.0
+dotnet new worker -n Service.ScheduleJob -o src/Services/Service.ScheduleJob -f net9.0
 
 ## create library
 
-dotnet new classlib -n Library.Core -f net9.0
+dotnet new classlib -n Library.Core -o src/Librarys/Library.Core -f net9.0
+
+dotnet new classlib -n Library.Database -o src/Librarys/Library.Database -f net9.0
 
 ## add project to solution
 
-dotnet sln Solution.sln add Service.WebAPI/Service.WebAPI.csproj
+dotnet sln Solution.sln add src/Services/Service.WebAPI/Service.WebAPI.csproj
 
-dotnet sln Solution.sln add Library.Core/Library.Core.csproj
+dotnet sln Solution.sln add src/Librarys/Library.Core/Library.Core.csproj
 
 ## reference
 
-dotnet add Service.WebAPI/Service.WebAPI.csproj reference Library.Core/Library.Core.csproj
+dotnet add src/Services/Service.WebAPI/Service.WebAPI.csproj reference src/Librarys/Library.Database/Library.Database.csproj
+
+dotnet add src/Services/Service.WebAPI/Service.WebAPI.csproj reference src/Librarys/Library.Core/Library.Core.csproj
+
+---
+
+## EF CLI install (once)
+
+dotnet tool install --global dotnet-ef
 
 ---
 
