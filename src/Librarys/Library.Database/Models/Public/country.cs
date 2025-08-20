@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace Library.Database.Models.Public;
 
-public partial class country
+public partial class Country
 {
-    public int id { get; set; }
+    public int Id { get; set; }
 
-    public string country_name { get; set; } = null!;
+    public string CountryName { get; set; } = null!;
 
-    public string country_code2 { get; set; } = null!;
+    public string CountryCode2 { get; set; } = null!;
 
-    public string country_code3 { get; set; } = null!;
+    public string CountryCode3 { get; set; } = null!;
 
-    public string currency_code { get; set; } = null!;
+    public string CurrencyCode { get; set; } = null!;
 
-    public string timezone { get; set; } = null!;
+    public string Timezone { get; set; } = null!;
 }

@@ -51,7 +51,6 @@ Npgsql.EntityFrameworkCore.PostgreSQL \
 --output-dir ./Models/Public \
 --namespace Library.Database.Models.Public \
 --no-onconfiguring \
---use-database-names \
 --force
 ```
 

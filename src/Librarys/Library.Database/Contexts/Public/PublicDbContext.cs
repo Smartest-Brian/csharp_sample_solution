@@ -12,25 +12,35 @@ public partial class PublicDbContext : DbContext
     {
     }
 
-    public virtual DbSet<country> countries { get; set; }
+    public virtual DbSet<Country> Countries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<country>(entity =>
+        modelBuilder.Entity<Country>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("countries_pkey");
+            entity.HasKey(e => e.Id).HasName("countries_pkey");
 
-            entity.Property(e => e.country_code2)
+            entity.ToTable("countries");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CountryCode2)
                 .HasMaxLength(2)
-                .IsFixedLength();
-            entity.Property(e => e.country_code3)
+                .IsFixedLength()
+                .HasColumnName("country_code2");
+            entity.Property(e => e.CountryCode3)
                 .HasMaxLength(3)
-                .IsFixedLength();
-            entity.Property(e => e.country_name).HasMaxLength(100);
-            entity.Property(e => e.currency_code)
+                .IsFixedLength()
+                .HasColumnName("country_code3");
+            entity.Property(e => e.CountryName)
+                .HasMaxLength(100)
+                .HasColumnName("country_name");
+            entity.Property(e => e.CurrencyCode)
                 .HasMaxLength(3)
-                .IsFixedLength();
-            entity.Property(e => e.timezone).HasMaxLength(50);
+                .IsFixedLength()
+                .HasColumnName("currency_code");
+            entity.Property(e => e.Timezone)
+                .HasMaxLength(50)
+                .HasColumnName("timezone");
         });
 
         OnModelCreatingPartial(modelBuilder);
