@@ -40,6 +40,23 @@ dotnet add src/Services/Service.WebAPI/Service.WebAPI.csproj reference src/Libra
 
 dotnet tool install --global dotnet-ef
 
+```shell
+dotnet ef dbcontext scaffold \
+"Host=localhost;Port=5432;Database=csharp_sample_solution_db;Username=db_admin;Password=P@ssw0rd" \
+Npgsql.EntityFrameworkCore.PostgreSQL \
+--schema public \
+--context PublicDbContext \
+--context-dir ./Contexts/Public \
+--context-namespace Library.Database.Contexts.Public \
+--output-dir ./Models/Public \
+--namespace Library.Database.Models.Public \
+--no-onconfiguring \
+--use-database-names \
+--force
+```
+
+create context by schema
+
 ---
 
 ## docker
