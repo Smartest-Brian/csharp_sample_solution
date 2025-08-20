@@ -19,10 +19,7 @@ builder.Services.AddQuartz(q =>
 });
 
 // 啟用 Quartz Hosted Service
-builder.Services.AddQuartzHostedService(opt =>
-{
-    opt.WaitForJobsToComplete = true;
-});
+builder.Services.AddQuartzHostedService(opt => { opt.WaitForJobsToComplete = true; });
 
 var host = builder.Build();
 host.Run();
