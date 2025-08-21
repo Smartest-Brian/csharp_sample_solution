@@ -2,6 +2,7 @@ using Library.Core.Middlewares;
 using Library.Database.Contexts.Public;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Library.Core.Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,8 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddDbContext<PublicDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+
+builder.Host.UseLibrarySerilog();
 
 var app = builder.Build();
 

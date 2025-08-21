@@ -6,27 +6,26 @@ namespace Service.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CountriesController : ControllerBase
+    public class CountriesController(
+        ILogger<CountriesController> _logger,
+        PublicDbContext _publicDbContext) : ControllerBase
     {
-        private readonly ILogger<CountriesController> _logger;
-        private readonly PublicDbContext _publicDbContext;
-
-        public CountriesController(
-            ILogger<CountriesController> logger,
-            PublicDbContext publicDbContext
-        )
-        {
-            _logger = logger;
-            _publicDbContext = publicDbContext;
-        }
-
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var data = await _publicDbContext.Countries
-                .OrderBy(x => x.CountryName)
-                .ToListAsync();
-            return Ok(data);
+            try
+            {
+                var data = await _publicDbContext.Countries
+                    .OrderBy(x => x.CountryName)
+                    .ToListAsync();
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "CountriesController.GetAll Error");
+                return Ok();
+            }
+            
         }
 
         [HttpGet("{id:int}")]
