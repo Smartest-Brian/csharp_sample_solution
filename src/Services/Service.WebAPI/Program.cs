@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Service.WebAPI
 {
-    static class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
