@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace Library.Core.Serilog;
+namespace Library.Core.Extensions;
 
-public static class SerilogHostBuilderExtensions
+public static class SerilogExtensions
 {
-    public static IHostBuilder UseLibrarySerilog(this IHostBuilder builder)
+    public static IHostBuilder UseSerilogExtensions(this IHostBuilder builder)
     {
         builder.UseSerilog((context, services, configuration) =>
         {

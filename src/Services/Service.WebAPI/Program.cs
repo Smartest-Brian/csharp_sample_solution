@@ -1,103 +1,77 @@
+using Library.Core.Extensions;
 using Library.Core.Middlewares;
-using Library.Core.Serilog;
 using Library.Database.Contexts.Public;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 
-const string connName = "Default";
-const string jwtScheme = "Bearer";
-
-var builder = WebApplication.CreateBuilder(args);
-
-// 1) Services
-AddCoreServices(builder);
-AddSwaggerWithJwt(builder);
-AddDb(builder);
-AddLogging(builder);
-
-// 2) Build
-var app = builder.Build();
-
-// 3) Pipeline
-UseHttpPipeline(app);
-
-app.Run();
-
-
-// ------------------------ Clean helpers (same file) ------------------------
-
-static void AddCoreServices(WebApplicationBuilder builder)
+namespace Service.WebAPI
 {
-    builder.Services.AddControllers();
-    builder.Services.AddEndpointsApiExplorer();
-}
-
-static void AddSwaggerWithJwt(WebApplicationBuilder builder)
-{
-    builder.Services.AddSwaggerGen(o =>
+    static class Program
     {
-        o.SwaggerDoc("v1", new OpenApiInfo { Title = builder.Environment.ApplicationName, Version = "v1" });
-
-        o.AddSecurityDefinition(jwtScheme, new OpenApiSecurityScheme
+        static void Main(string[] args)
         {
-            Name = "Authorization",
-            Type = SecuritySchemeType.Http,
-            Scheme = jwtScheme,
-            BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-            Description = "JWT Authorization header using the Bearer scheme."
-        });
+            var builder = WebApplication.CreateBuilder(args);
 
-        o.AddSecurityRequirement(new OpenApiSecurityRequirement
+            ConfigBasic(builder);
+            ConfigSwagger(builder);
+            ConfigDatabase(builder);
+            ConfigSerilog(builder);
+            ConfigApp(builder);
+        }
+
+        static void ConfigBasic(WebApplicationBuilder builder)
         {
+            builder.Services.AddControllers();
+            builder.Services.AddCors();
+        }
+
+        static void ConfigSwagger(WebApplicationBuilder builder)
+        {
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+        }
+
+        static void ConfigDatabase(WebApplicationBuilder builder)
+        {
+            var connectionString = builder.Configuration.GetConnectionString("PostgreSql");
+            if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
+
+            builder.Services.AddDbContext<PublicDbContext>(opt =>
             {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = jwtScheme }
-                },
-                Array.Empty<string>()
+                opt.UseNpgsql(connectionString);
+                opt.EnableSensitiveDataLogging();
+            });
+        }
+
+        static void ConfigSerilog(WebApplicationBuilder builder)
+        {
+            builder.Host.UseSerilogExtensions();
+        }
+
+        static void ConfigApp(WebApplicationBuilder builder)
+        {
+            var app = builder.Build();
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
-        });
-    });
-}
+            else
+            {
+                app.UseHsts();
+            }
 
-static void AddDb(WebApplicationBuilder builder)
-{
-    var conn = builder.Configuration.GetConnectionString(connName);
-    if (string.IsNullOrWhiteSpace(conn))
-        throw new InvalidOperationException($"Missing connection string '{connName}'.");
+            app.UseHttpsRedirection();
 
-    builder.Services.AddDbContext<PublicDbContext>(opt =>
-    {
-        opt.UseNpgsql(conn);
-        // 若預設就好，拿掉下面這行
-        // opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-    });
-}
+            app.UseMiddleware<RequestIdMiddleware>();
 
-static void AddLogging(WebApplicationBuilder builder)
-{
-    // Library.Core.Serilog 擴充
-    builder.Host.UseLibrarySerilog();
-}
+            app.UseCors("AllowSpecificOrigin");
 
-static void UseHttpPipeline(WebApplication app)
-{
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapControllers();
+            app.Run();
+        }
     }
-    else
-    {
-        app.UseHsts();
-    }
-
-    app.UseHttpsRedirection();
-
-    // 自訂中介層（請確保已在 Library.Core.Middlewares 設好）
-    app.UseMiddleware<RequestIdMiddleware>();
-
-    app.UseAuthorization();
-    app.MapControllers();
 }
