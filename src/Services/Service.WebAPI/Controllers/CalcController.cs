@@ -5,15 +5,10 @@ namespace Service.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CalcController : ControllerBase
+    public class CalcController(
+        ILogger<CalcController> logger
+    ) : ControllerBase
     {
-        private readonly ILogger<CalcController> _logger;
-
-        public CalcController(ILogger<CalcController> logger)
-        {
-            _logger = logger;
-        }
-
         // GET 範例
         [HttpGet("divide")]
         public IActionResult Divide(int a, int b)
@@ -28,12 +23,12 @@ namespace Service.WebAPI.Controllers
             }
             catch (DivideByZeroException ex)
             {
-                _logger.LogError(ex, "計算失敗：嘗試除以零");
+                logger.LogError(ex, "計算失敗：嘗試除以零");
                 return BadRequest(new { Success = false, Message = ex.Message });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "發生未預期的錯誤");
+                logger.LogError(ex, "發生未預期的錯誤");
                 return StatusCode(500, new { Success = false, Message = "伺服器錯誤，請稍後再試" });
             }
         }
@@ -49,7 +44,7 @@ namespace Service.WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "發生未預期的錯誤");
+                logger.LogError(ex, "發生未預期的錯誤");
                 return StatusCode(500, new { Success = false, Message = "伺服器錯誤，請稍後再試" });
             }
         }

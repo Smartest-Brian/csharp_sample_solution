@@ -1,3 +1,5 @@
+using Library.Database.Contexts.Public;
+using Library.Database.Models.Public;
 using Service.GraphQL.Models;
 
 namespace Service.GraphQL.GraphQL;
@@ -14,4 +16,7 @@ public class Query
     /// </summary>
     public IEnumerable<Models.Message> GetMessages()
         => MessageStore.Messages;
+
+    public IQueryable<Country> GetCountries([Service] PublicDbContext db) =>
+        db.Countries;
 }
