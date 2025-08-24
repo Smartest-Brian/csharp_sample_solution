@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Service.WebAPI.Models;
+using Service.WebAPI.Models.Calc;
 
 namespace Service.WebAPI.Controllers
 {

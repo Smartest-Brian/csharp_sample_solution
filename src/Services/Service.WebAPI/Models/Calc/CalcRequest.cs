@@ -1,4 +1,4 @@
-namespace Service.WebAPI.Models
+namespace Service.WebAPI.Models.Calc
 {
     public class CalcRequest
     {
