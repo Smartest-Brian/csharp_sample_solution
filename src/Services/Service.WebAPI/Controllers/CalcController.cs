@@ -18,7 +18,7 @@ namespace Service.WebAPI.Controllers
         }
 
         [HttpPost("multiply")]
-        public IActionResult Multiply([FromBody] CalcRequest request)
+        public IActionResult Multiply([FromBody] MultiplyRequest request)
         {
             var result = calcService.Multiply(request.A, request.B);
             return result.Success ? Ok(result) : BadRequest(result);

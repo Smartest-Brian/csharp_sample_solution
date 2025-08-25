@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Service.WebAPI.Models.Countries;
 using Service.WebAPI.Services;
 
 namespace Service.WebAPI.Controllers
