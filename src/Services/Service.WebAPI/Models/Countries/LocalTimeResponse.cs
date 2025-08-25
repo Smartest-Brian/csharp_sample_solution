@@ -1,6 +1,6 @@
 namespace Service.WebAPI.Models.Countries
 {
-    public class LocalTimeResponseData
+    public class LocalTimeResponse
     {
         public string CountryName { get; set; } = string.Empty;
         public string Timezone { get; set; } = string.Empty;

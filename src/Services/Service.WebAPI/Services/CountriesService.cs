@@ -40,7 +40,7 @@ public class CountriesService(
         return Result<Country?>.Ok(item);
     }
 
-    public async Task<Result<LocalTimeResponseData>> GetLocalTimeAsync(string countryName)
+    public async Task<Result<LocalTimeResponse>> GetLocalTimeAsync(string countryName)
     {
         try
         {
@@ -49,7 +49,7 @@ public class CountriesService(
 
             if (country == null || string.IsNullOrEmpty(country.Timezone))
             {
-                return Result<LocalTimeResponseData>.Fail("Country not found");
+                return Result<LocalTimeResponse>.Fail("Country not found");
             }
 
             var timezone = TimeZoneInfo.FindSystemTimeZoneById(country.Timezone);
@@ -63,7 +63,7 @@ public class CountriesService(
                 utcOffset = "+" + utcOffset;
             }
 
-            return Result<LocalTimeResponseData>.Ok(new LocalTimeResponseData
+            return Result<LocalTimeResponse>.Ok(new LocalTimeResponse
             {
                 CountryName = country.CountryName,
                 Timezone = country.Timezone,
@@ -74,7 +74,7 @@ public class CountriesService(
         catch (Exception ex)
         {
             logger.LogError(ex, "CountriesService.GetLocalTimeAsync Error for country: {CountryName}", countryName);
-            return Result<LocalTimeResponseData>.Fail("Server error");
+            return Result<LocalTimeResponse>.Fail("Server error");
         }
     }
 }
