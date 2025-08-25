@@ -1,11 +1,10 @@
-namespace Service.WebAPI.Services;
-
 using Library.Core.Common;
 using Library.Database.Contexts.Public;
 using Library.Database.Models.Public;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Service.WebAPI.Models.Countries;
+
+namespace Service.WebAPI.Services;
 
 public class CountriesService(
     PublicDbContext dbContext,
@@ -54,8 +53,10 @@ public class CountriesService(
 
             var timezone = TimeZoneInfo.FindSystemTimeZoneById(country.Timezone);
             var localTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, timezone);
+
+            // 考慮夏令時間
             var offset = timezone.GetUtcOffset(localTime);
-            var utcOffset = offset.ToString(@"hh\\:mm");
+            var utcOffset = offset.ToString(@"hh\:mm");
             if (!offset.ToString().StartsWith("-"))
             {
                 utcOffset = "+" + utcOffset;

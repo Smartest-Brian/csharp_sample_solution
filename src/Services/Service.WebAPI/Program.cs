@@ -13,6 +13,7 @@ namespace Service.WebAPI
             var builder = WebApplication.CreateBuilder(args);
 
             ConfigBasic(builder);
+            ConfigService(builder);
             ConfigSwagger(builder);
             ConfigDatabase(builder);
             ConfigSerilog(builder);
@@ -23,6 +24,10 @@ namespace Service.WebAPI
         {
             builder.Services.AddControllers();
             builder.Services.AddCors();
+        }
+
+        static void ConfigService(WebApplicationBuilder builder)
+        {
             builder.Services.AddScoped<ICalcService, CalcService>();
             builder.Services.AddScoped<ICountriesService, CountriesService>();
         }
