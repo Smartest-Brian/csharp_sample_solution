@@ -10,7 +10,6 @@ namespace Service.WebAPI.Controllers
         ICalcService calcService
     ) : ControllerBase
     {
-        // GET 範例
         [HttpGet("divide")]
         public IActionResult Divide(int a, int b)
         {
@@ -18,7 +17,6 @@ namespace Service.WebAPI.Controllers
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
-        // POST 範例 (使用 Model)
         [HttpPost("multiply")]
         public IActionResult Multiply([FromBody] CalcRequest request)
         {

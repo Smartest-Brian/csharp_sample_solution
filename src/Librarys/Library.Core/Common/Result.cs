@@ -4,7 +4,7 @@ namespace Library.Core.Common
     {
         public bool Success { get; set; }
         
-        public string? Error { get; set; }
+        public string? Message { get; set; }
         
         public T? Data { get; set; }
 
@@ -12,6 +12,6 @@ namespace Library.Core.Common
             new Result<T> { Success = true, Data = data };
 
         public static Result<T> Fail(string error) =>
-            new Result<T> { Success = false, Error = error };
+            new Result<T> { Success = false, Message = error };
     }
 }

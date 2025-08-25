@@ -6,7 +6,7 @@ using Service.WebAPI.Models.Countries;
 
 public interface ICountriesService
 {
-    Task<Result<List<Country>>> GetAllAsync();
-    Task<Result<Country?>> GetByIdAsync(int id);
+    Task<Result<List<Country>>> GetCountriesAsync();
+    Task<Result<Country?>> GetCountryByIdAsync(int id);
     Task<Result<LocalTimeResponseData>> GetLocalTimeAsync(string countryName);
 }

@@ -12,9 +12,9 @@ namespace Service.WebAPI.Controllers
     ) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetCountries()
         {
-            var result = await countriesService.GetAllAsync();
+            var result = await countriesService.GetCountriesAsync();
             return result.Success
                 ? Ok(result)
                 : StatusCode(StatusCodes.Status500InternalServerError, result);
@@ -23,7 +23,7 @@ namespace Service.WebAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await countriesService.GetByIdAsync(id);
+            var result = await countriesService.GetCountryByIdAsync(id);
             return result.Success ? Ok(result) : NotFound(result);
         }
 
@@ -32,7 +32,7 @@ namespace Service.WebAPI.Controllers
         {
             var result = await countriesService.GetLocalTimeAsync(countryName);
             if (result.Success) return Ok(result);
-            return result.Error == "Country not found"
+            return result.Message == "Country not found"
                 ? NotFound(result)
                 : StatusCode(StatusCodes.Status500InternalServerError, result);
         }

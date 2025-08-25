@@ -11,7 +11,7 @@ public class CountriesService(
     ILogger<CountriesService> logger
 ) : ICountriesService
 {
-    public async Task<Result<List<Country>>> GetAllAsync()
+    public async Task<Result<List<Country>>> GetCountriesAsync()
     {
         try
         {
@@ -23,14 +23,15 @@ public class CountriesService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "CountriesService.GetAllAsync Error");
+            logger.LogError(ex, "CountriesService.GetCountriesAsync Error");
             return Result<List<Country>>.Fail("Server error");
         }
     }
 
-    public async Task<Result<Country?>> GetByIdAsync(int id)
+    public async Task<Result<Country?>> GetCountryByIdAsync(int id)
     {
-        var item = await dbContext.Countries.FindAsync(id);
+        var item = await dbContext.Countries
+            .FirstOrDefaultAsync(x => x.Id == id);
         if (item == null)
         {
             return Result<Country?>.Fail("Country not found");
