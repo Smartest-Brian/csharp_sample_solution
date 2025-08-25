@@ -1,84 +1,40 @@
-using Library.Database.Contexts.Public;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Service.WebAPI.Models.Countries;
-using Service.WebAPI.Models;
+using Service.WebAPI.Services;
 
 namespace Service.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class CountriesController(
-        ILogger<CountriesController> logger,
-        PublicDbContext publicDbContext
+        ICountriesService countriesService
     ) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
-                var data = await publicDbContext.Countries
-                    .OrderBy(x => x.CountryName)
-                    .ToListAsync();
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "CountriesController.GetAll Error");
-                return Ok();
-            }
+            var result = await countriesService.GetAllAsync();
+            return result.Success
+                ? Ok(result)
+                : StatusCode(StatusCodes.Status500InternalServerError, result);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var item = await publicDbContext.Countries.FindAsync(id);
-            return item is null ? NotFound() : Ok(item);
+            var result = await countriesService.GetByIdAsync(id);
+            return result.Success ? Ok(result) : NotFound(result);
         }
 
         [HttpGet("localTime/{countryName}")]
         public async Task<IActionResult> GetLocalTime(string countryName)
         {
-            try
-            {
-                var country = await publicDbContext.Countries
-                    .FirstOrDefaultAsync(x => x.CountryName.ToLower() == countryName.ToLower());
-
-                if (country == null || string.IsNullOrEmpty(country.Timezone))
-                    return NotFound();
-
-                var timezone = TimeZoneInfo.FindSystemTimeZoneById(country.Timezone);
-                var localTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, timezone);
-
-                // 考慮夏令時間
-                var offset = timezone.GetUtcOffset(localTime);
-                string utcOffset = offset.ToString(@"hh\:mm");
-                if (!offset.ToString().StartsWith("-"))
-                {
-                    utcOffset = "+" + utcOffset;
-                }
-
-                LocalTimeResponseData res = new LocalTimeResponseData
-                {
-                    CountryName = country.CountryName,
-                    Timezone = country.Timezone,
-                    LocalTime = localTime,
-                    UtcOffset = utcOffset
-                };
-
-                return Ok(new LocalTimeResponse
-                {
-                    Success = true,
-                    Message = null,
-                    Data = res
-                });
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "CountriesController.GetLocalTime Error for country: {CountryName}", countryName);
-                return StatusCode(500);
-            }
+            var result = await countriesService.GetLocalTimeAsync(countryName);
+            if (result.Success) return Ok(result);
+            return result.Error == "Country not found"
+                ? NotFound(result)
+                : StatusCode(StatusCodes.Status500InternalServerError, result);
         }
     }
 }

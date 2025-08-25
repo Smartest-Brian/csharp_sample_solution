@@ -2,6 +2,7 @@ using Library.Core.Extensions;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Public;
 using Microsoft.EntityFrameworkCore;
+using Service.WebAPI.Services;
 
 namespace Service.WebAPI
 {
@@ -22,6 +23,8 @@ namespace Service.WebAPI
         {
             builder.Services.AddControllers();
             builder.Services.AddCors();
+            builder.Services.AddScoped<ICalcService, CalcService>();
+            builder.Services.AddScoped<ICountriesService, CountriesService>();
         }
 
         static void ConfigSwagger(WebApplicationBuilder builder)
