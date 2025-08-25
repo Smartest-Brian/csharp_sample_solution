@@ -1,4 +1,5 @@
 using Library.Core.Common;
+using Library.Core.Time.Services;
 using Library.Database.Contexts.Public;
 using Library.Database.Models.Public;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,8 @@ namespace Service.WebAPI.Services;
 
 public class CountriesService(
     PublicDbContext dbContext,
-    ILogger<CountriesService> logger
+    ILogger<CountriesService> logger,
+    ITimezoneService timezoneService
 ) : ICountriesService
 {
     public async Task<Result<List<Country>>> GetCountriesAsync()
@@ -51,24 +53,15 @@ public class CountriesService(
             {
                 return Result<LocalTimeResponse>.Fail("Country not found");
             }
-
-            var timezone = TimeZoneInfo.FindSystemTimeZoneById(country.Timezone);
-            var localTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, timezone);
-
-            // 考慮夏令時間
-            var offset = timezone.GetUtcOffset(localTime);
-            var utcOffset = offset.ToString(@"hh\:mm");
-            if (!offset.ToString().StartsWith("-"))
-            {
-                utcOffset = "+" + utcOffset;
-            }
+            
+            var tzResult = timezoneService.ComputeLocalTime(country.Timezone);
 
             return Result<LocalTimeResponse>.Ok(new LocalTimeResponse
             {
                 CountryName = country.CountryName,
                 Timezone = country.Timezone,
-                LocalTime = localTime,
-                UtcOffset = utcOffset
+                LocalTime = tzResult.LocalTime,
+                UtcOffset = tzResult.UtcOffset
             });
         }
         catch (Exception ex)

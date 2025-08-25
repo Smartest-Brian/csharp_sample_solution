@@ -30,6 +30,7 @@ namespace Service.WebAPI
         {
             builder.Services.AddScoped<ICalcService, CalcService>();
             builder.Services.AddScoped<ICountriesService, CountriesService>();
+            builder.Services.AddTimezoneService();
         }
 
         static void ConfigSwagger(WebApplicationBuilder builder)
