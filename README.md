@@ -38,6 +38,30 @@ dotnet add src/Services/Service.WebAPI/Service.WebAPI.csproj reference src/Libra
 
 ---
 
+## format
+
+```bash
+# 格式化整個 solution
+dotnet format Solution.sln
+
+# 格式化特定專案
+dotnet format src/Service.WebAPI/Service.WebAPI.csproj
+
+# 只檢查，不實際修改
+dotnet format --verify-no-changes
+
+# 只針對程式碼風格 (Style)
+dotnet format style
+
+# 只針對語法/編譯錯誤 (Analyzers)
+dotnet format analyzers
+
+# 只針對空白/縮排/using 排序 (Whitespace)
+dotnet format whitespace
+```
+
+---
+
 ## EF CLI install (once)
 
 dotnet tool install --global dotnet-ef
