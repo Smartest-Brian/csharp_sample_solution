@@ -1,4 +1,4 @@
-namespace Library.Core.Common
+namespace Library.Core.Results
 {
     public class Result<T>
     {

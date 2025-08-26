@@ -1,4 +1,4 @@
-using Library.Core.Common;
+using Library.Core.Results;
 
 namespace Service.WebAPI.Services.Calc;
 
