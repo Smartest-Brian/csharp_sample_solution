@@ -9,29 +9,29 @@ namespace Library.Core.Middlewares;
 
 public sealed class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger)
 {
-    public async Task Invoke(HttpContext ctx)
+    public async Task Invoke(HttpContext context)
     {
         try
         {
-            await next(ctx);
+            await next(context);
         }
         catch (Exception ex)
         {
-            var traceId = ctx.TraceIdentifier;
-            logger.LogError(ex, $"Unhandled exception. RequestId: {traceId}");
+            var requestId = context.TraceIdentifier;
+            logger.LogError(ex, $"Unhandled exception. RequestId: {requestId}");
 
-            ctx.Response.ContentType = "application/problem+json";
-            ctx.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.ContentType = "application/problem+json";
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             var problem = new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
                 Title = "An unexpected error occurred.",
                 Detail = "Please contact support with the provided request id.",
-                Extensions = { ["requestId"] = traceId }
+                Extensions = { ["requestId"] = requestId }
             };
 
-            await ctx.Response.WriteAsync(JsonSerializer.Serialize(problem));
+            await context.Response.WriteAsync(JsonSerializer.Serialize(problem));
         }
     }
 }
