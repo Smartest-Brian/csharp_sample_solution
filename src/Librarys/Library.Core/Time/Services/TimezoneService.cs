@@ -8,12 +8,12 @@ public class TimezoneService : ITimezoneService
     {
         var timezone = TimeZoneInfo.FindSystemTimeZoneById(timezoneId);
 
-        var utc = utcNow?.ToUniversalTime() ?? DateTime.UtcNow;
-        var localTime = TimeZoneInfo.ConvertTime(utc, timezone);
+        DateTime utc = utcNow?.ToUniversalTime() ?? DateTime.UtcNow;
+        DateTime localTime = TimeZoneInfo.ConvertTime(utc, timezone);
 
-        var offset = timezone.GetUtcOffset(localTime);
+        TimeSpan offset = timezone.GetUtcOffset(localTime);
         var sign = offset < TimeSpan.Zero ? "-" : "+";
-        var abs = offset.Duration();
+        TimeSpan abs = offset.Duration();
         var utcOffset = $"{sign}{abs:hh\\:mm}";
 
         return new TimezoneComputationResult
