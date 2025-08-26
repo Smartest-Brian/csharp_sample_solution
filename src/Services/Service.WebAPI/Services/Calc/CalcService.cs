@@ -1,6 +1,6 @@
 using Library.Core.Common;
 
-namespace Service.WebAPI.Services;
+namespace Service.WebAPI.Services.Calc;
 
 public class CalcService(ILogger<CalcService> logger) : ICalcService
 {

@@ -1,9 +1,9 @@
-namespace Service.WebAPI.Services;
-
 using Library.Core.Common;
 using Library.Database.Models.Public;
 
 using Service.WebAPI.Models.Countries;
+
+namespace Service.WebAPI.Services.Countries;
 
 public interface ICountriesService
 {

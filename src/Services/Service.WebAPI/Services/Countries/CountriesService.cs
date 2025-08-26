@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Service.WebAPI.Models.Countries;
 
-namespace Service.WebAPI.Services;
+namespace Service.WebAPI.Services.Countries;
 
 public class CountriesService(
     PublicDbContext dbContext,

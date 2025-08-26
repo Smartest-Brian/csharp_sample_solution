@@ -4,7 +4,7 @@ using Library.Database.Models.Public;
 using Microsoft.AspNetCore.Mvc;
 
 using Service.WebAPI.Models.Countries;
-using Service.WebAPI.Services;
+using Service.WebAPI.Services.Countries;
 
 namespace Service.WebAPI.Controllers
 {

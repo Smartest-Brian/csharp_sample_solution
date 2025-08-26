@@ -1,6 +1,6 @@
-namespace Service.WebAPI.Services;
-
 using Library.Core.Common;
+
+namespace Service.WebAPI.Services.Calc;
 
 public interface ICalcService
 {
