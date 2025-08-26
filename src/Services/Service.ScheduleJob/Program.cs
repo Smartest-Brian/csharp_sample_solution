@@ -15,7 +15,7 @@ namespace Service.ScheduleJob
     {
         private static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             ConfigBasic(builder);
             ConfigDatabase(builder);
@@ -71,7 +71,7 @@ namespace Service.ScheduleJob
 
         private static void ConfigApp(WebApplicationBuilder builder)
         {
-            var app = builder.Build();
+            WebApplication app = builder.Build();
 
             app.UseHttpsRedirection();
 
