@@ -1,4 +1,4 @@
-using Library.Core.Extensions;
+using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Public;
 
@@ -41,7 +41,7 @@ namespace Service.GraphQL
 
         private static void ConfigSerilog(WebApplicationBuilder builder)
         {
-            builder.Host.UseSerilogExtensions();
+            builder.UseSerilogLogging();
         }
 
         private static void ConfigGraphql(WebApplicationBuilder builder)

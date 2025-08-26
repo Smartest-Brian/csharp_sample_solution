@@ -2,7 +2,7 @@ using Library.Core.Time.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Library.Core.Time.Extensions;
+namespace Library.Core.Time;
 
 public static class TimezoneExtensions
 {

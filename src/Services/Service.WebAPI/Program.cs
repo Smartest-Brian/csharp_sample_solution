@@ -1,6 +1,6 @@
-using Library.Core.Extensions;
+using Library.Core.Logging;
 using Library.Core.Middlewares;
-using Library.Core.Time.Extensions;
+using Library.Core.Time;
 using Library.Database.Contexts.Public;
 
 using Microsoft.EntityFrameworkCore;
@@ -57,7 +57,7 @@ namespace Service.WebAPI
 
         private static void ConfigSerilog(WebApplicationBuilder builder)
         {
-            builder.Host.UseSerilogExtensions();
+            builder.UseSerilogLogging();
         }
 
         private static void ConfigApp(WebApplicationBuilder builder)
