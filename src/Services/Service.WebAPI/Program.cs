@@ -1,5 +1,6 @@
 using Library.Core.Extensions;
 using Library.Core.Middlewares;
+using Library.Core.Time.Extensions;
 using Library.Database.Contexts.Public;
 
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ namespace Service.WebAPI
     {
         private static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             ConfigBasic(builder);
             ConfigService(builder);
@@ -61,7 +62,7 @@ namespace Service.WebAPI
 
         private static void ConfigApp(WebApplicationBuilder builder)
         {
-            var app = builder.Build();
+            WebApplication app = builder.Build();
 
             if (app.Environment.IsDevelopment())
             {
