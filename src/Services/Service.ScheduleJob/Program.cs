@@ -1,9 +1,12 @@
 using Library.Core.Extensions;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Public;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+
 using Quartz;
+
 using Service.ScheduleJob.Jobs;
 
 namespace Service.ScheduleJob
@@ -21,13 +24,13 @@ namespace Service.ScheduleJob
             ConfigApp(builder);
         }
 
-        static void ConfigBasic(WebApplicationBuilder builder)
+        private static void ConfigBasic(WebApplicationBuilder builder)
         {
             builder.Services.AddControllers();
             builder.Services.AddCors();
         }
 
-        static void ConfigDatabase(WebApplicationBuilder builder)
+        private static void ConfigDatabase(WebApplicationBuilder builder)
         {
             var connectionString = builder.Configuration.GetConnectionString("PostgreSql");
             if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
@@ -39,7 +42,7 @@ namespace Service.ScheduleJob
             });
         }
 
-        static void ConfigQuartz(WebApplicationBuilder builder)
+        private static void ConfigQuartz(WebApplicationBuilder builder)
         {
             // 加入 Quartz
             builder.Services.AddQuartz(q =>
@@ -60,13 +63,13 @@ namespace Service.ScheduleJob
             builder.Services.AddQuartzHostedService(opt => { opt.WaitForJobsToComplete = true; });
         }
 
-        static void ConfigSerilog(WebApplicationBuilder builder)
+        private static void ConfigSerilog(WebApplicationBuilder builder)
         {
             builder.Host.UseSerilogExtensions();
         }
 
 
-        static void ConfigApp(WebApplicationBuilder builder)
+        private static void ConfigApp(WebApplicationBuilder builder)
         {
             var app = builder.Build();
 

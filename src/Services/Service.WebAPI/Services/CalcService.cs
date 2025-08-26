@@ -1,6 +1,7 @@
 namespace Service.WebAPI.Services;
 
 using Library.Core.Common;
+
 using Microsoft.Extensions.Logging;
 
 public class CalcService(ILogger<CalcService> logger) : ICalcService

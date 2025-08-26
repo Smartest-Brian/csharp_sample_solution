@@ -1,0 +1,176 @@
+# =========================
+# Root
+# =========================
+root = true
+
+# =========================
+# Global defaults
+# =========================
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# =========================
+# C# code style / formatting
+# =========================
+[*.cs]
+indent_style = space
+indent_size = 4
+
+# --- Using 相關 ---
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+# C# 10+：建議 file-scoped namespace
+csharp_style_namespace_declarations = file_scoped:suggestion
+# using 放在最上層（搭配 file-scoped）
+csharp_using_directive_placement = outside_namespace:silent
+
+# --- 括號/換行/縮排 ---
+csharp_new_line_before_open_brace = all
+csharp_new_line_between_query_expression_clauses = true
+csharp_indent_block_contents = true
+csharp_indent_braces = false
+csharp_indent_switch_labels = true
+csharp_indent_case_contents = true
+csharp_indent_labels = flush_left
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_parentheses = false
+csharp_space_around_binary_operators = before_and_after
+
+# --- var 使用規範 ---
+# 1) 型別明顯 → 用 var
+csharp_style_var_when_type_is_apparent = true:suggestion
+# 2) 內建型別 → 用 var（可讀性一致）
+csharp_style_var_for_built_in_types = true:suggestion
+# 3) 其他情況 → 明確型別
+csharp_style_var_elsewhere = false:suggestion
+
+# --- 表達式/語法偏好 ---
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_prefer_auto_properties = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
+dotnet_style_prefer_conditional_expression_over_return = true:suggestion
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+
+# C# 現代語法
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = when_on_single_line:suggestion
+csharp_style_expression_bodied_indexers = when_on_single_line:suggestion
+csharp_style_expression_bodied_accessors = when_on_single_line:suggestion
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+csharp_style_prefer_switch_expression = true:suggestion
+csharp_style_prefer_tuple_swap = true:suggestion
+csharp_style_prefer_primary_constructors = false:silent
+csharp_style_prefer_top_level_statements = false:silent
+
+# Lambda / 本機函式
+csharp_style_prefer_local_over_anonymous_function = true:suggestion
+csharp_style_prefer_simple_lambda_expression = true:suggestion
+csharp_style_parentheses_in_arithmetic_binary_operators = always_for_clarity
+csharp_style_parentheses_in_relational_binary_operators = always_for_clarity
+
+# using / Dispose
+csharp_prefer_simple_using_statement = true:suggestion
+
+# 變數/欄位
+dotnet_style_readonly_field = true:warning
+csharp_prefer_static_local_function = true:suggestion
+
+# record/struct
+dotnet_style_prefer_record_struct = true:suggestion
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+
+# Nullable（仍建議在 .csproj 啟用 <Nullable>enable</Nullable>）
+dotnet_style_prefer_simplified_null_check = true:suggestion
+
+# --- 修飾詞與 brace ---
+csharp_preferred_modifier_order = public,private,protected,internal,static,readonly,async:suggestion
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_event = false:suggestion
+
+# =========================
+# 命名規範（常見團隊約定）
+# =========================
+# 規則：介面 I 開頭；Private/Protected 欄位 _camelCase；型別/屬性/方法 PascalCase；常數 PascalCase
+
+# 符號規範宣告
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_symbols.interfaces.applicable_accessibilities = *
+dotnet_naming_symbols.interfaces.required_modifiers = *
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private,protected,protected_internal,private_protected
+dotnet_naming_symbols.private_fields.required_modifiers = *
+
+dotnet_naming_symbols.constants.applicable_kinds = field
+dotnet_naming_symbols.constants.applicable_accessibilities = *
+dotnet_naming_symbols.constants.required_modifiers = const
+
+dotnet_naming_symbols.types_and_members.applicable_kinds = class,struct,enum,property,method,delegate,event
+dotnet_naming_symbols.types_and_members.applicable_accessibilities = *
+dotnet_naming_symbols.types_and_members.required_modifiers = *
+
+# 命名樣式
+dotnet_naming_style.pascal_case.capitalization = PascalCase
+dotnet_naming_style.camel_case.capitalization = camelCase
+dotnet_naming_style.prefix_i.capitalization = PascalCase
+dotnet_naming_style.prefix_i.required_prefix = I
+dotnet_naming_style.leading_underscore.capitalization = camelCase
+dotnet_naming_style.leading_underscore.required_prefix = _
+
+# 套用規則
+dotnet_naming_rule.interfaces_should_be_prefixed_with_i.symbols = interfaces
+dotnet_naming_rule.interfaces_should_be_prefixed_with_i.style = prefix_i
+dotnet_naming_rule.interfaces_should_be_prefixed_with_i.severity = suggestion
+
+dotnet_naming_rule.private_fields_should_have_underscore_prefix.symbols = private_fields
+dotnet_naming_rule.private_fields_should_have_underscore_prefix.style = leading_underscore
+dotnet_naming_rule.private_fields_should_have_underscore_prefix.severity = suggestion
+
+dotnet_naming_rule.constants_should_be_pascalcase.symbols = constants
+dotnet_naming_rule.constants_should_be_pascalcase.style = pascal_case
+dotnet_naming_rule.constants_should_be_pascalcase.severity = suggestion
+
+dotnet_naming_rule.types_and_members_should_be_pascalcase.symbols = types_and_members
+dotnet_naming_rule.types_and_members_should_be_pascalcase.style = pascal_case
+dotnet_naming_rule.types_and_members_should_be_pascalcase.severity = suggestion
+
+# =========================
+# 常用 Roslyn 診斷（提升品質）
+# =========================
+# 移除未使用 using
+dotnet_diagnostic.IDE0005.severity = warning
+# 使用隱式 new()
+dotnet_diagnostic.IDE0090.severity = suggestion
+# 使用 using 宣告
+dotnet_diagnostic.IDE0063.severity = suggestion
+# 可為 readonly 的欄位
+dotnet_diagnostic.IDE0044.severity = warning
+# 移除未使用參數（可視需求降低嚴重度）
+dotnet_diagnostic.IDE0060.severity = suggestion
+# 簡化/內嵌變數
+dotnet_diagnostic.IDE0007.severity = suggestion
+dotnet_diagnostic.IDE0016.severity = suggestion
+
+# =========================
+# JSON / XML（選）
+# =========================
+[*.{json,xml}]
+indent_style = space
+indent_size = 2
+
+# =========================
+# .editorconfig（本檔）自身格式
+# =========================
+[.editorconfig]
+indent_style = space
+indent_size = 2

@@ -2,7 +2,9 @@ using Library.Core.Common;
 using Library.Core.Time.Services;
 using Library.Database.Contexts.Public;
 using Library.Database.Models.Public;
+
 using Microsoft.EntityFrameworkCore;
+
 using Service.WebAPI.Models.Countries;
 
 namespace Service.WebAPI.Services;
@@ -53,7 +55,7 @@ public class CountriesService(
             {
                 return Result<LocalTimeResponse>.Fail("Country not found");
             }
-            
+
             var tzResult = timezoneService.ComputeLocalTime(country.Timezone);
 
             return Result<LocalTimeResponse>.Ok(new LocalTimeResponse

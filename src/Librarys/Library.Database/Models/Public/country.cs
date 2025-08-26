@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-
 namespace Library.Database.Models.Public;
 
 public partial class Country

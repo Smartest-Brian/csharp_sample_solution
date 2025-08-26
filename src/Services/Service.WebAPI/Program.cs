@@ -1,7 +1,9 @@
 using Library.Core.Extensions;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Public;
+
 using Microsoft.EntityFrameworkCore;
+
 using Service.WebAPI.Services;
 
 namespace Service.WebAPI
@@ -20,26 +22,26 @@ namespace Service.WebAPI
             ConfigApp(builder);
         }
 
-        static void ConfigBasic(WebApplicationBuilder builder)
+        private static void ConfigBasic(WebApplicationBuilder builder)
         {
             builder.Services.AddControllers();
             builder.Services.AddCors();
         }
 
-        static void ConfigService(WebApplicationBuilder builder)
+        private static void ConfigService(WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<ICalcService, CalcService>();
             builder.Services.AddScoped<ICountriesService, CountriesService>();
             builder.Services.AddTimezoneService();
         }
 
-        static void ConfigSwagger(WebApplicationBuilder builder)
+        private static void ConfigSwagger(WebApplicationBuilder builder)
         {
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
         }
 
-        static void ConfigDatabase(WebApplicationBuilder builder)
+        private static void ConfigDatabase(WebApplicationBuilder builder)
         {
             var connectionString = builder.Configuration.GetConnectionString("PostgreSql");
             if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
@@ -51,12 +53,12 @@ namespace Service.WebAPI
             });
         }
 
-        static void ConfigSerilog(WebApplicationBuilder builder)
+        private static void ConfigSerilog(WebApplicationBuilder builder)
         {
             builder.Host.UseSerilogExtensions();
         }
 
-        static void ConfigApp(WebApplicationBuilder builder)
+        private static void ConfigApp(WebApplicationBuilder builder)
         {
             var app = builder.Build();
 

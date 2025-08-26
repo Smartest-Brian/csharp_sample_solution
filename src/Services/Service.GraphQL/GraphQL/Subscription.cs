@@ -1,6 +1,3 @@
-using HotChocolate;
-using HotChocolate.Subscriptions;
-
 namespace Service.GraphQL.GraphQL;
 
 public class Subscription

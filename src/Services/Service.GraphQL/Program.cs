@@ -1,7 +1,9 @@
 using Library.Core.Extensions;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Public;
+
 using Microsoft.EntityFrameworkCore;
+
 using Service.GraphQL.GraphQL;
 
 namespace Service.GraphQL
@@ -19,13 +21,13 @@ namespace Service.GraphQL
             ConfigApp(builder);
         }
 
-        static void ConfigBasic(WebApplicationBuilder builder)
+        private static void ConfigBasic(WebApplicationBuilder builder)
         {
             builder.Services.AddControllers();
             builder.Services.AddCors();
         }
 
-        static void ConfigDatabase(WebApplicationBuilder builder)
+        private static void ConfigDatabase(WebApplicationBuilder builder)
         {
             var connectionString = builder.Configuration.GetConnectionString("PostgreSql");
             if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
@@ -37,12 +39,12 @@ namespace Service.GraphQL
             });
         }
 
-        static void ConfigSerilog(WebApplicationBuilder builder)
+        private static void ConfigSerilog(WebApplicationBuilder builder)
         {
             builder.Host.UseSerilogExtensions();
         }
 
-        static void ConfigGraphql(WebApplicationBuilder builder)
+        private static void ConfigGraphql(WebApplicationBuilder builder)
         {
             builder.Services
                 .AddGraphQLServer()
@@ -52,7 +54,7 @@ namespace Service.GraphQL
                 .AddInMemorySubscriptions();
         }
 
-        static void ConfigApp(WebApplicationBuilder builder)
+        private static void ConfigApp(WebApplicationBuilder builder)
         {
             var app = builder.Build();
 
