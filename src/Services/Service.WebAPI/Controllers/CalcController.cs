@@ -1,3 +1,5 @@
+using Library.Core.Common;
+
 using Microsoft.AspNetCore.Mvc;
 
 using Service.WebAPI.Models.Calc;
@@ -14,14 +16,14 @@ namespace Service.WebAPI.Controllers
         [HttpGet("divide")]
         public IActionResult Divide(int a, int b)
         {
-            var result = calcService.Divide(a, b);
+            Result<int> result = calcService.Divide(a, b);
             return result.Success ? Ok(result) : BadRequest(result);
         }
 
         [HttpPost("multiply")]
         public IActionResult Multiply([FromBody] MultiplyRequest request)
         {
-            var result = calcService.Multiply(request.A, request.B);
+            Result<int> result = calcService.Multiply(request.A, request.B);
             return result.Success ? Ok(result) : BadRequest(result);
         }
     }

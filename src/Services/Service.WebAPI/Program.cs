@@ -75,6 +75,7 @@ namespace Service.WebAPI
             app.UseHttpsRedirection();
 
             app.UseMiddleware<RequestIdMiddleware>();
+            app.UseMiddleware<GlobalExceptionMiddleware>();
 
             app.UseCors("AllowSpecificOrigin");
 

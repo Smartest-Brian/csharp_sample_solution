@@ -1,5 +1,9 @@
+using Library.Core.Common;
+using Library.Database.Models.Public;
+
 using Microsoft.AspNetCore.Mvc;
 
+using Service.WebAPI.Models.Countries;
 using Service.WebAPI.Services;
 
 namespace Service.WebAPI.Controllers
@@ -13,7 +17,7 @@ namespace Service.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCountries()
         {
-            var result = await countriesService.GetCountriesAsync();
+            Result<List<Country>> result = await countriesService.GetCountriesAsync();
             return result.Success
                 ? Ok(result)
                 : StatusCode(StatusCodes.Status500InternalServerError, result);
@@ -22,14 +26,14 @@ namespace Service.WebAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await countriesService.GetCountryByIdAsync(id);
+            Result<Country?> result = await countriesService.GetCountryByIdAsync(id);
             return result.Success ? Ok(result) : NotFound(result);
         }
 
         [HttpGet("localTime/{countryName}")]
         public async Task<IActionResult> GetLocalTime(string countryName)
         {
-            var result = await countriesService.GetLocalTimeAsync(countryName);
+            Result<LocalTimeResponse> result = await countriesService.GetLocalTimeAsync(countryName);
             if (result.Success) return Ok(result);
             return result.Message == "Country not found"
                 ? NotFound(result)
