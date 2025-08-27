@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Service.WebAPI.Models.Countries;
 using Service.WebAPI.Services.Countries;
+using Library.InfoHelper;
 
 namespace Service.WebAPI.Controllers
 {
@@ -38,6 +39,13 @@ namespace Service.WebAPI.Controllers
             return result.Message == "Country not found"
                 ? NotFound(result)
                 : StatusCode(StatusCodes.Status500InternalServerError, result);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh()
+        {
+            await CountryCache.RefreshAsync(HttpContext.RequestServices);
+            return Ok(Result<string>.Ok("Cache refreshed"));
         }
     }
 }

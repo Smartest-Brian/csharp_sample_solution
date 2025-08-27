@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Service.WebAPI.Services.Calc;
 using Service.WebAPI.Services.Countries;
+using Library.InfoHelper;
 
 namespace Service.WebAPI
 {
@@ -35,6 +36,7 @@ namespace Service.WebAPI
             builder.Services.AddScoped<ICalcService, CalcService>();
             builder.Services.AddScoped<ICountriesService, CountriesService>();
             builder.Services.AddTimezoneService();
+            builder.Services.AddInfoHelper();
         }
 
         private static void ConfigSwagger(WebApplicationBuilder builder)
