@@ -2,6 +2,7 @@ using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Core.Time;
 using Library.Database.Contexts.Public;
+using Library.InfoHelper;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -35,6 +36,7 @@ namespace Service.WebAPI
             builder.Services.AddScoped<ICalcService, CalcService>();
             builder.Services.AddScoped<ICountriesService, CountriesService>();
             builder.Services.AddTimezoneService();
+            builder.Services.AddInfoHelper();
         }
 
         private static void ConfigSwagger(WebApplicationBuilder builder)
