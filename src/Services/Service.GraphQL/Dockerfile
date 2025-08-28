@@ -1,21 +1,27 @@
-﻿FROM mcr.microsoft.com/dotnet/runtime:9.0 AS base
-USER $APP_UID
-WORKDIR /app
-
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+﻿FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /workspace
+
 COPY ["src/Services/Service.GraphQL/Service.GraphQL.csproj", "src/Services/Service.GraphQL/"]
 RUN dotnet restore "src/Services/Service.GraphQL/Service.GraphQL.csproj"
-COPY . .
-WORKDIR "/workspace/src/Services/Service.GraphQL"
-RUN dotnet build "Service.GraphQL.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
+COPY . .
+WORKDIR /workspace/src/Services/Service.GraphQL
 RUN dotnet publish "Service.GraphQL.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+ARG APP_UID=1000
+ARG APP_GID=1000
+# 先檢查是否存在，再決定要不要新增
+RUN set -eux; \
+    if ! getent group app >/dev/null; then groupadd -g "$APP_GID" app; fi; \
+    if ! id -u app >/dev/null 2>&1; then useradd -m -u "$APP_UID" -g app app; fi
+USER app
+
+ENV ASPNETCORE_URLS=http://+:8080
+EXPOSE 8080
+
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "Service.GraphQL.dll"]
