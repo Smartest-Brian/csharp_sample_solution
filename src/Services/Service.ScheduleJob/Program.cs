@@ -63,10 +63,7 @@ namespace Service.ScheduleJob
             builder.Services.AddQuartzHostedService(opt => { opt.WaitForJobsToComplete = true; });
         }
 
-        private static void ConfigSerilog(WebApplicationBuilder builder)
-        {
-            builder.UseSerilogLogging();
-        }
+        private static void ConfigSerilog(WebApplicationBuilder builder) => builder.UseSerilogLogging();
 
 
         private static void ConfigApp(WebApplicationBuilder builder)
