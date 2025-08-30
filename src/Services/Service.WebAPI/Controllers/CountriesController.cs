@@ -14,8 +14,8 @@ namespace Service.WebAPI.Controllers
         ICountriesService countriesService
     ) : ControllerBase
     {
-        [HttpGet]
-        public async Task<IActionResult> GetCountries()
+        [HttpGet("list")]
+        public async Task<IActionResult> GetList()
         {
             Result<List<Country>> result = await countriesService.GetCountriesAsync();
             return result.Success
@@ -24,14 +24,18 @@ namespace Service.WebAPI.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(
+            int id
+        )
         {
             Result<Country?> result = await countriesService.GetCountryByIdAsync(id);
             return result.Success ? Ok(result) : NotFound(result);
         }
 
         [HttpGet("localTime/{countryName}")]
-        public async Task<IActionResult> GetLocalTime(string countryName)
+        public async Task<IActionResult> GetLocalTime(
+            string countryName
+        )
         {
             Result<LocalTimeResponse> result = await countriesService.GetLocalTimeAsync(countryName);
             if (result.Success) return Ok(result);

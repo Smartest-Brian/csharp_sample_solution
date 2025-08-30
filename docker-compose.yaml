@@ -11,10 +11,10 @@ services:
       - pgdata:/var/lib/postgresql/data # 把 pgdata 掛到容器內 data 目錄
       - ./infra/db/postgres/init:/docker-entrypoint-initdb.d:ro
 
-  webapi:
+  auth:
     build:
       context: .
-      dockerfile: src/Services/Service.WebAPI/Dockerfile
+      dockerfile: src/Services/Service.Auth/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
     ports:
@@ -22,14 +22,25 @@ services:
     depends_on:
       - postgres
 
-#  schedule:
-#    build:
-#      context: .
-#      dockerfile: src/Services/Service.ScheduleJob/Dockerfile
-#    environment:
-#      ASPNETCORE_ENVIRONMENT: Docker
-#    depends_on:
-#      - postgres
+  webapi:
+    build:
+      context: .
+      dockerfile: src/Services/Service.WebAPI/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+
+  #  schedule:
+  #    build:
+  #      context: .
+  #      dockerfile: src/Services/Service.ScheduleJob/Dockerfile
+  #    environment:
+  #      ASPNETCORE_ENVIRONMENT: Docker
+  #    depends_on:
+  #      - postgres
 
   graphql:
     build:
@@ -38,7 +49,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
     ports:
-      - "8081:8080"
+      - "8082:8080"
     depends_on:
       - postgres
 
