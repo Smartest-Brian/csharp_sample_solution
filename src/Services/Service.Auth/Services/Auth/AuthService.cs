@@ -1,7 +1,9 @@
 using Library.Core.Results;
 using Library.Database.Contexts.Auth;
 using Library.Database.Models.Auth;
+
 using Microsoft.EntityFrameworkCore;
+
 using Service.Auth.Models.Auth;
 using Service.Auth.Services.Jwt;
 using Service.Auth.Services.Password;

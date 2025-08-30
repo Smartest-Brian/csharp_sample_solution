@@ -1,4 +1,5 @@
 using Library.Core.Results;
+
 using Service.Auth.Models.Auth;
 
 namespace Service.Auth.Services.Auth;

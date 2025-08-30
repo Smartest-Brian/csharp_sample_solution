@@ -136,6 +136,17 @@ docker system prune -a --volumes
 
 # describe
 
+## Service.Auth
+
+Jwt Control
+
+Jwt.Key 建立語法
+
+```bash
+# 產生後移除所有換行
+openssl rand -base64 64 | tr -d '\n'
+```
+
 ## Service.WebAPI
 
 dotnet add package Swashbuckle.AspNetCore -v 6.7.0
