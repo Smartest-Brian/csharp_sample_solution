@@ -66,6 +66,10 @@ dotnet format whitespace
 
 dotnet tool install --global dotnet-ef
 
+## run EF CLI in Library.Database path
+
+### public
+
 ```shell
 dotnet ef dbcontext scaffold \
 "Host=localhost;Port=5432;Database=csharp_sample_solution_db;Username=db_admin;Password=P@ssw0rd" \
@@ -76,6 +80,22 @@ Npgsql.EntityFrameworkCore.PostgreSQL \
 --context-namespace Library.Database.Contexts.Public \
 --output-dir ./Models/Public \
 --namespace Library.Database.Models.Public \
+--no-onconfiguring \
+--force
+```
+
+### auth
+
+```shell
+dotnet ef dbcontext scaffold \
+"Host=localhost;Port=5432;Database=csharp_sample_solution_db;Username=db_admin;Password=P@ssw0rd" \
+Npgsql.EntityFrameworkCore.PostgreSQL \
+--schema auth \
+--context AuthDbContext \
+--context-dir ./Contexts/Auth \
+--context-namespace Library.Database.Contexts.Auth \
+--output-dir ./Models/Auth \
+--namespace Library.Database.Models.Auth \
 --no-onconfiguring \
 --force
 ```
