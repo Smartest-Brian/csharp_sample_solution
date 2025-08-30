@@ -1,11 +1,11 @@
 using Library.Core.Results;
 using Library.Database.Models.Public;
 
-using Service.WebAPI.Models.Countries;
+using Service.WebAPI.Models.Country;
 
-namespace Service.WebAPI.Services.Countries;
+namespace Service.WebAPI.Services.Country;
 
-public interface ICountriesService
+public interface ICountryService
 {
     Task<Result<List<CountryInfo>>> GetCountriesAsync();
     Task<Result<CountryInfo?>> GetCountryByIdAsync(int id);

@@ -3,21 +3,21 @@ using Library.Database.Models.Public;
 
 using Microsoft.AspNetCore.Mvc;
 
-using Service.WebAPI.Models.Countries;
-using Service.WebAPI.Services.Countries;
+using Service.WebAPI.Models.Country;
+using Service.WebAPI.Services.Country;
 
 namespace Service.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CountriesController(
-        ICountriesService countriesService
+    public class CountryController(
+        ICountryService countryService
     ) : ControllerBase
     {
         [HttpGet("list")]
         public async Task<IActionResult> GetList()
         {
-            Result<List<CountryInfo>> result = await countriesService.GetCountriesAsync();
+            Result<List<CountryInfo>> result = await countryService.GetCountriesAsync();
             return result.Success
                 ? Ok(result)
                 : StatusCode(StatusCodes.Status500InternalServerError, result);
@@ -28,7 +28,7 @@ namespace Service.WebAPI.Controllers
             int id
         )
         {
-            Result<CountryInfo?> result = await countriesService.GetCountryByIdAsync(id);
+            Result<CountryInfo?> result = await countryService.GetCountryByIdAsync(id);
             return result.Success ? Ok(result) : NotFound(result);
         }
 
@@ -37,7 +37,7 @@ namespace Service.WebAPI.Controllers
             string countryName
         )
         {
-            Result<LocalTimeResponse> result = await countriesService.GetLocalTimeAsync(countryName);
+            Result<LocalTimeResponse> result = await countryService.GetLocalTimeAsync(countryName);
             if (result.Success) return Ok(result);
             return result.Message == "Country not found"
                 ? NotFound(result)

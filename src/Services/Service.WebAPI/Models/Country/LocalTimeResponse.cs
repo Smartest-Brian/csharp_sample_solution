@@ -1,4 +1,4 @@
-namespace Service.WebAPI.Models.Countries
+namespace Service.WebAPI.Models.Country
 {
     public class LocalTimeResponse
     {

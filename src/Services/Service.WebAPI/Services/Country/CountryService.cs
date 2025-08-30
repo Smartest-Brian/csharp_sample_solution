@@ -6,15 +6,15 @@ using Library.Database.Models.Public;
 
 using Microsoft.EntityFrameworkCore;
 
-using Service.WebAPI.Models.Countries;
+using Service.WebAPI.Models.Country;
 
-namespace Service.WebAPI.Services.Countries;
+namespace Service.WebAPI.Services.Country;
 
-public class CountriesService(
+public class CountryService(
     PublicDbContext dbContext,
-    ILogger<CountriesService> logger,
+    ILogger<CountryService> logger,
     ITimezoneService timezoneService
-) : ICountriesService
+) : ICountryService
 {
     public async Task<Result<List<CountryInfo>>> GetCountriesAsync()
     {
