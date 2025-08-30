@@ -1,7 +1,10 @@
 using System.Security.Claims;
+
 using Library.Core.Results;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using Service.Auth.Models.Auth;
 using Service.Auth.Services.Auth;
 

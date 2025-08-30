@@ -1,10 +1,13 @@
 using System.Text;
+
 using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Auth;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
 using Service.Auth.Services.Auth;
 using Service.Auth.Services.Jwt;
 using Service.Auth.Services.Password;
@@ -63,7 +66,7 @@ namespace Service.Auth
 
         private static void ConfigDatabase(WebApplicationBuilder builder)
         {
-            var connectionString = builder.Configuration.GetConnectionString("PostgreSql");
+            string? connectionString = builder.Configuration.GetConnectionString("PostgreSql");
             if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
             builder.Services.AddDbContext<AuthDbContext>(opt =>
             {
