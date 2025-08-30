@@ -5,7 +5,6 @@ using Library.Database.Contexts.Public;
 
 using Microsoft.EntityFrameworkCore;
 
-using Service.WebAPI.Services.Calc;
 using Service.WebAPI.Services.Countries;
 
 namespace Service.WebAPI
@@ -32,7 +31,6 @@ namespace Service.WebAPI
 
         private static void ConfigService(WebApplicationBuilder builder)
         {
-            builder.Services.AddScoped<ICalcService, CalcService>();
             builder.Services.AddScoped<ICountriesService, CountriesService>();
             builder.Services.AddTimezoneService();
         }

@@ -81,6 +81,7 @@ Npgsql.EntityFrameworkCore.PostgreSQL \
 --output-dir ./Models/Public \
 --namespace Library.Database.Models.Public \
 --no-onconfiguring \
+--no-pluralize \
 --force
 ```
 
@@ -97,6 +98,7 @@ Npgsql.EntityFrameworkCore.PostgreSQL \
 --output-dir ./Models/Auth \
 --namespace Library.Database.Models.Auth \
 --no-onconfiguring \
+--no-pluralize \
 --force
 ```
 

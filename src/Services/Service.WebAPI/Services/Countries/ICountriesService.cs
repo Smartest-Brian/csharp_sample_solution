@@ -7,7 +7,7 @@ namespace Service.WebAPI.Services.Countries;
 
 public interface ICountriesService
 {
-    Task<Result<List<Country>>> GetCountriesAsync();
-    Task<Result<Country?>> GetCountryByIdAsync(int id);
+    Task<Result<List<CountryInfo>>> GetCountriesAsync();
+    Task<Result<CountryInfo?>> GetCountryByIdAsync(int id);
     Task<Result<LocalTimeResponse>> GetLocalTimeAsync(string countryName);
 }

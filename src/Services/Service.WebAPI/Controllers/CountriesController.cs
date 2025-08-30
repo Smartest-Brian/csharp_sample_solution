@@ -17,7 +17,7 @@ namespace Service.WebAPI.Controllers
         [HttpGet("list")]
         public async Task<IActionResult> GetList()
         {
-            Result<List<Country>> result = await countriesService.GetCountriesAsync();
+            Result<List<CountryInfo>> result = await countriesService.GetCountriesAsync();
             return result.Success
                 ? Ok(result)
                 : StatusCode(StatusCodes.Status500InternalServerError, result);
@@ -28,7 +28,7 @@ namespace Service.WebAPI.Controllers
             int id
         )
         {
-            Result<Country?> result = await countriesService.GetCountryByIdAsync(id);
+            Result<CountryInfo?> result = await countriesService.GetCountryByIdAsync(id);
             return result.Success ? Ok(result) : NotFound(result);
         }
 

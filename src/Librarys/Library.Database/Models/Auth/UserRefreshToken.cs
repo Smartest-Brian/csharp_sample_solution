@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Library.Database.Models.Auth;
 
-public partial class RefreshToken
+public partial class UserRefreshToken
 {
     public Guid Id { get; set; }
 
@@ -17,5 +17,5 @@ public partial class RefreshToken
 
     public DateTime? RevokedAt { get; set; }
 
-    public virtual User User { get; set; } = null!;
+    public virtual UserInfo User { get; set; } = null!;
 }

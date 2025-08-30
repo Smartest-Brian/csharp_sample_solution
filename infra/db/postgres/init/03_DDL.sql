@@ -2,7 +2,7 @@
 CREATE SCHEMA auth AUTHORIZATION pg_database_owner;
 
 -- 使用者表
-CREATE TABLE IF NOT EXISTS auth.users (
+CREATE TABLE IF NOT EXISTS auth.user_info (
     id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     username         citext NOT NULL UNIQUE,
     email            citext UNIQUE,
@@ -16,19 +16,19 @@ CREATE TABLE IF NOT EXISTS auth.users (
     );
 
 -- Refresh Token 表
-CREATE TABLE IF NOT EXISTS auth.refresh_tokens (
+CREATE TABLE IF NOT EXISTS auth.user_refresh_token (
     id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id       uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    user_id       uuid NOT NULL REFERENCES auth.user_info(id) ON DELETE CASCADE,
     token         text NOT NULL UNIQUE,
     expires_at    timestamptz NOT NULL,
     created_at    timestamptz NOT NULL DEFAULT now(),
     revoked_at    timestamptz
     );
 
-CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user ON auth.refresh_tokens(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_refresh_token_user ON auth.user_refresh_token(user_id);
 
 -- 國家
-CREATE TABLE countries
+CREATE TABLE country_info
 (
     id            SERIAL PRIMARY KEY,
     country_name  VARCHAR(100) NOT NULL,

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Library.Database.Models.Auth;
 
-public partial class User
+public partial class UserInfo
 {
     public Guid Id { get; set; }
 
@@ -25,5 +25,5 @@ public partial class User
 
     public DateTime UpdatedAt { get; set; }
 
-    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    public virtual ICollection<UserRefreshToken> UserRefreshToken { get; set; } = new List<UserRefreshToken>();
 }

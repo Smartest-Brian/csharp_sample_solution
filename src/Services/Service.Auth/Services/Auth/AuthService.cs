@@ -21,7 +21,7 @@ public class AuthService(
     {
         try
         {
-            bool exists = await db.Users.AnyAsync(u => u.Username == request.Username);
+            bool exists = await db.UserInfo.AnyAsync(u => u.Username == request.Username);
             if (exists) return Result<UserResponse>.Fail("Username already exists");
 
             (string hash, string salt) = passwordHasher.HashPassword(request.Password);
@@ -34,7 +34,7 @@ public class AuthService(
                 .Select(r => Enum.Parse<Role>(r, true).ToString().ToLowerInvariant())
                 .ToList();
 
-            User user = new()
+            UserInfo user = new()
             {
                 Username = request.Username,
                 Email = request.Email,
@@ -44,7 +44,7 @@ public class AuthService(
                 IsActive = true
             };
 
-            db.Users.Add(user);
+            db.UserInfo.Add(user);
             await db.SaveChangesAsync();
 
             UserResponse response = new()
@@ -68,7 +68,7 @@ public class AuthService(
     {
         try
         {
-            User? user = await db.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            UserInfo? user = await db.UserInfo.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user is null)
             {
                 return Result<TokenResponse>.Fail("Invalid credentials");
@@ -80,7 +80,7 @@ public class AuthService(
             string accessToken = jwtService.GenerateAccessToken(user);
             string refreshToken = jwtService.GenerateRefreshToken();
 
-            RefreshToken refreshEntity = new()
+            UserRefreshToken refreshEntity = new()
             {
                 UserId = user.Id,
                 Token = refreshToken,
@@ -89,7 +89,7 @@ public class AuthService(
 
             user.LastLoginAt = DateTime.UtcNow;
 
-            db.RefreshTokens.Add(refreshEntity);
+            db.UserRefreshToken.Add(refreshEntity);
             await db.SaveChangesAsync();
 
             TokenResponse response = new()
@@ -111,7 +111,7 @@ public class AuthService(
     {
         try
         {
-            User? user = await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+            UserInfo? user = await db.UserInfo.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
             if (user is null) return Result<UserResponse>.Fail("User not found");
 
             UserResponse response = new()
@@ -135,7 +135,7 @@ public class AuthService(
     {
         try
         {
-            RefreshToken? tokenEntity = await db.RefreshTokens.Include(r => r.User)
+            UserRefreshToken? tokenEntity = await db.UserRefreshToken.Include(r => r.User)
                 .FirstOrDefaultAsync(r => r.Token == request.RefreshToken);
 
             if (tokenEntity is null || tokenEntity.RevokedAt != null || tokenEntity.ExpiresAt < DateTime.UtcNow)
@@ -145,19 +145,19 @@ public class AuthService(
 
             tokenEntity.RevokedAt = DateTime.UtcNow;
 
-            User user = tokenEntity.User;
+            UserInfo user = tokenEntity.User;
 
             string newAccessToken = jwtService.GenerateAccessToken(user);
             string newRefreshToken = jwtService.GenerateRefreshToken();
 
-            RefreshToken newRefreshEntity = new()
+            UserRefreshToken newRefreshEntity = new()
             {
                 UserId = user.Id,
                 Token = newRefreshToken,
                 ExpiresAt = DateTime.UtcNow.AddDays(jwtService.RefreshTokenExpiryDays)
             };
 
-            db.RefreshTokens.Add(newRefreshEntity);
+            db.UserRefreshToken.Add(newRefreshEntity);
             await db.SaveChangesAsync();
 
             TokenResponse response = new()

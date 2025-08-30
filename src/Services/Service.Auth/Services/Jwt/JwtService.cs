@@ -13,7 +13,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
 {
     private readonly IConfiguration _configuration = configuration;
 
-    public string GenerateAccessToken(User user)
+    public string GenerateAccessToken(UserInfo user)
     {
         SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         SigningCredentials signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

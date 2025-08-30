@@ -15,9 +15,10 @@ public class Query
     /// <summary>
     /// 取回目前所有訊息
     /// </summary>
-    public IEnumerable<Models.Message> GetMessages()
+    public IEnumerable<Message> GetMessages()
         => MessageStore.Messages;
 
-    public IQueryable<Country> GetCountries([Service] PublicDbContext db) =>
-        db.Countries;
+    public IQueryable<CountryInfo> GetCountries(
+        [Service] PublicDbContext db
+    ) => db.CountryInfo;
 }

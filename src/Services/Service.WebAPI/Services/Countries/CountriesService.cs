@@ -16,15 +16,15 @@ public class CountriesService(
     ITimezoneService timezoneService
 ) : ICountriesService
 {
-    public async Task<Result<List<Country>>> GetCountriesAsync()
+    public async Task<Result<List<CountryInfo>>> GetCountriesAsync()
     {
         try
         {
-            List<Country> data = await dbContext.Countries
+            List<CountryInfo> data = await dbContext.CountryInfo
                 .OrderBy(x => x.CountryName)
                 .ToListAsync();
 
-            return Result<List<Country>>.Ok(data);
+            return Result<List<CountryInfo>>.Ok(data);
         }
         catch (Exception ex)
         {
@@ -33,24 +33,24 @@ public class CountriesService(
         }
     }
 
-    public async Task<Result<Country?>> GetCountryByIdAsync(int id)
+    public async Task<Result<CountryInfo?>> GetCountryByIdAsync(int id)
     {
-        Country? item = await dbContext.Countries
+        CountryInfo? item = await dbContext.CountryInfo
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (item == null)
         {
-            return Result<Country?>.Fail("Country not found");
+            return Result<CountryInfo?>.Fail("Country not found");
         }
 
-        return Result<Country?>.Ok(item);
+        return Result<CountryInfo?>.Ok(item);
     }
 
     public async Task<Result<LocalTimeResponse>> GetLocalTimeAsync(string countryName)
     {
         try
         {
-            Country? country = await dbContext.Countries
+            CountryInfo? country = await dbContext.CountryInfo
                 .FirstOrDefaultAsync(x => x.CountryName.ToLower() == countryName.ToLower());
 
             if (country == null || string.IsNullOrEmpty(country.Timezone))

@@ -1,5 +1,6 @@
+﻿using System;
+using System.Collections.Generic;
 using Library.Database.Models.Public;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Database.Contexts.Public;
@@ -11,15 +12,19 @@ public partial class PublicDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Country> Countries { get; set; }
+    public virtual DbSet<CountryInfo> CountryInfo { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Country>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("countries_pkey");
+        modelBuilder
+            .HasPostgresExtension("citext")
+            .HasPostgresExtension("pgcrypto");
 
-            entity.ToTable("countries");
+        modelBuilder.Entity<CountryInfo>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("country_info_pkey");
+
+            entity.ToTable("country_info");
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CountryCode2)

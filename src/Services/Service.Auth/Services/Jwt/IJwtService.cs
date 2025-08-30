@@ -4,7 +4,7 @@ namespace Service.Auth.Services.Jwt;
 
 public interface IJwtService
 {
-    string GenerateAccessToken(User user);
+    string GenerateAccessToken(UserInfo user);
     string GenerateRefreshToken();
     int RefreshTokenExpiryDays { get; }
 }
