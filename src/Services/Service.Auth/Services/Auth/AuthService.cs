@@ -26,13 +26,21 @@ public class AuthService(
 
             (string hash, string salt) = passwordHasher.HashPassword(request.Password);
 
+            if (!request.Roles.All(r => Enum.TryParse<Role>(r, true, out _)))
+            {
+                return Result<UserResponse>.Fail("Invalid roles");
+            }
+            List<string> roles = request.Roles
+                .Select(r => Enum.Parse<Role>(r, true).ToString().ToLowerInvariant())
+                .ToList();
+
             User user = new()
             {
                 Username = request.Username,
                 Email = request.Email,
                 PasswordHash = hash,
                 PasswordSalt = salt,
-                Roles = new List<string>(),
+                Roles = roles,
                 IsActive = true
             };
 

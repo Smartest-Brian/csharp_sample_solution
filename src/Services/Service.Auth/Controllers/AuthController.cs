@@ -15,22 +15,26 @@ namespace Service.Auth.Controllers;
 public class AuthController(IAuthService authService) : ControllerBase
 {
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterRequest request)
+    public async Task<IActionResult> Register(
+        [FromBody] RegisterRequest request
+    )
     {
         Result<UserResponse> result = await authService.RegisterAsync(request);
         return result.Success ? Ok(result) : BadRequest(result);
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequest request)
+    public async Task<IActionResult> Login(
+        [FromBody] LoginRequest request
+    )
     {
         Result<TokenResponse> result = await authService.LoginAsync(request);
         return result.Success ? Ok(result) : Unauthorized(result);
     }
 
     [Authorize]
-    [HttpGet("me")]
-    public async Task<IActionResult> Me()
+    [HttpGet("getUserInfo")]
+    public async Task<IActionResult> GetUserInfo()
     {
         string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(userId)) return Unauthorized();
@@ -40,7 +44,9 @@ public class AuthController(IAuthService authService) : ControllerBase
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh(RefreshRequest request)
+    public async Task<IActionResult> Refresh(
+        [FromBody] RefreshRequest request
+    )
     {
         Result<TokenResponse> result = await authService.RefreshAsync(request);
         return result.Success ? Ok(result) : Unauthorized(result);
