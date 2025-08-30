@@ -68,6 +68,7 @@ namespace Service.Auth
         {
             string? connectionString = builder.Configuration.GetConnectionString("PostgreSql");
             if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
+
             builder.Services.AddDbContext<AuthDbContext>(opt =>
             {
                 opt.UseNpgsql(connectionString);
