@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.WebAPI", "src\Servi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Database", "src\Librarys\Library.Database\Library.Database.csproj", "{BC860009-990D-4BD4-AD72-AAFCE54F9A5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Auth", "src\Services\Service.Auth\Service.Auth.csproj", "{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,18 @@ Global
 		{BC860009-990D-4BD4-AD72-AAFCE54F9A5E}.Release|x64.Build.0 = Release|Any CPU
 		{BC860009-990D-4BD4-AD72-AAFCE54F9A5E}.Release|x86.ActiveCfg = Release|Any CPU
 		{BC860009-990D-4BD4-AD72-AAFCE54F9A5E}.Release|x86.Build.0 = Release|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Debug|x64.Build.0 = Debug|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Debug|x86.Build.0 = Debug|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Release|x64.ActiveCfg = Release|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Release|x64.Build.0 = Release|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Release|x86.ActiveCfg = Release|Any CPU
+		{DA6A6180-47C4-4DF1-A19D-793B0C2C426D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
