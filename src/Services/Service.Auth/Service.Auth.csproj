@@ -16,8 +16,4 @@
     <ProjectReference Include="..\..\Librarys\Library.Database\Library.Database.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

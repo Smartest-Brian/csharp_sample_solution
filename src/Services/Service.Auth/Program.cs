@@ -1,9 +1,13 @@
+using System.Text;
 using Library.Core.Logging;
 using Library.Core.Middlewares;
-using Library.Core.Time;
-using Library.Database.Contexts.Public;
-
+using Library.Database.Contexts.Auth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Service.Auth.Services.Auth;
+using Service.Auth.Services.Jwt;
+using Service.Auth.Services.Password;
 
 namespace Service.Auth
 {
@@ -29,6 +33,26 @@ namespace Service.Auth
 
         private static void ConfigService(WebApplicationBuilder builder)
         {
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+            builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+                };
+            });
         }
 
         private static void ConfigSwagger(WebApplicationBuilder builder)
@@ -41,8 +65,7 @@ namespace Service.Auth
         {
             var connectionString = builder.Configuration.GetConnectionString("PostgreSql");
             if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
-
-            builder.Services.AddDbContext<PublicDbContext>(opt =>
+            builder.Services.AddDbContext<AuthDbContext>(opt =>
             {
                 opt.UseNpgsql(connectionString);
                 opt.EnableSensitiveDataLogging();
