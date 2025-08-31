@@ -74,4 +74,29 @@ public class CountryService(
             throw;
         }
     }
+
+    public async Task<Result<CountryInfo>> AddCountryAsync(CreateCountryRequest request)
+    {
+        try
+        {
+            CountryInfo country = new()
+            {
+                CountryName = request.CountryName,
+                CountryCode2 = request.CountryCode2,
+                CountryCode3 = request.CountryCode3,
+                CurrencyCode = request.CurrencyCode,
+                Timezone = request.Timezone
+            };
+
+            dbContext.CountryInfo.Add(country);
+            await dbContext.SaveChangesAsync();
+
+            return Result<CountryInfo>.Ok(country);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "CountriesService.AddCountryAsync Error");
+            throw;
+        }
+    }
 }
