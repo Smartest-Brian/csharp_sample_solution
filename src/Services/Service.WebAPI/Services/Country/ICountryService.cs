@@ -10,4 +10,5 @@ public interface ICountryService
     Task<Result<List<CountryInfo>>> GetCountriesAsync();
     Task<Result<CountryInfo?>> GetCountryByIdAsync(int id);
     Task<Result<LocalTimeResponse>> GetLocalTimeAsync(string countryName);
+    Task<Result<CountryInfo>> AddCountryAsync(CreateCountryRequest request);
 }
