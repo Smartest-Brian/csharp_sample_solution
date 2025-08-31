@@ -11,11 +11,9 @@ namespace Service.Auth.Services.Jwt;
 
 public class JwtService(IConfiguration configuration) : IJwtService
 {
-    private readonly IConfiguration _configuration = configuration;
-
     public string GenerateAccessToken(UserInfo user)
     {
-        SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+        SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
         SigningCredentials signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         Claim[] claims =
@@ -25,10 +23,10 @@ public class JwtService(IConfiguration configuration) : IJwtService
         ];
 
         JwtSecurityToken token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
+            issuer: configuration["Jwt:Issuer"],
+            audience: configuration["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Jwt:AccessTokenExpiresMinutes"] ?? "30")),
+            expires: DateTime.UtcNow.AddMinutes(int.Parse(configuration["Jwt:AccessTokenExpiresMinutes"] ?? "30")),
             signingCredentials: signingCredentials
         );
 
@@ -41,5 +39,5 @@ public class JwtService(IConfiguration configuration) : IJwtService
         return Convert.ToBase64String(bytes);
     }
 
-    public int RefreshTokenExpiryDays => int.Parse(_configuration["Jwt:RefreshTokenExpiresDays"] ?? "7");
+    public int RefreshTokenExpiryDays => int.Parse(configuration["Jwt:RefreshTokenExpiresDays"] ?? "7");
 }
