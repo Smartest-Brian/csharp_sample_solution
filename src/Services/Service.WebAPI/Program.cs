@@ -1,16 +1,15 @@
 using System.Text;
 
-using Library.ApiClient.Services.Auth;
+using Library.ApiClient.Extensions;
 using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Core.Time;
 using Library.Database.Contexts.Public;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-
-using Refit;
+using Microsoft.OpenApi.Models;
 
 using Service.WebAPI.Services.Country;
 
@@ -58,10 +57,7 @@ namespace Service.WebAPI
                 };
             });
 
-            builder.Services
-                .AddRefitClient<IAuthApi>()
-                .ConfigureHttpClient(c =>
-                    c.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseUrl"]!));
+            builder.Services.AddAuthApiClient(builder.Configuration);
         }
 
         private static void ConfigSwagger(WebApplicationBuilder builder)
@@ -69,31 +65,31 @@ namespace Service.WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Auth API",
                     Version = "v1"
                 });
 
                 // 加入 JWT 驗證設定
-                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                    Type = SecuritySchemeType.Http,
                     Scheme = "bearer",
                     BearerFormat = "JWT",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    In = ParameterLocation.Header,
                     Description = "請輸入 JWT Token，格式: Bearer {your token}"
                 });
 
-                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
-                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                        new OpenApiSecurityScheme
                         {
-                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                            Reference = new OpenApiReference
                             {
-                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                                Type = ReferenceType.SecurityScheme,
                                 Id = "Bearer"
                             }
                         },
