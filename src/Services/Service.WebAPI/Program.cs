@@ -1,16 +1,11 @@
-using System.Text;
-
 using Library.ApiClient.Services.Auth;
+using Library.Core.Authentication;
 using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Core.Time;
 using Library.Database.Contexts.Public;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-
-using Refit;
 
 using Service.WebAPI.Services.Country;
 
@@ -41,27 +36,8 @@ namespace Service.WebAPI
             builder.Services.AddScoped<ICountryService, CountryService>();
             builder.Services.AddTimezoneService();
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-                };
-            });
-
-            builder.Services
-                .AddRefitClient<IAuthApi>()
-                .ConfigureHttpClient(c =>
-                    c.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseUrl"]!));
+            builder.Services.AddJwtAuthentication(builder.Configuration);
+            builder.Services.AddAuthApiClient(builder.Configuration);
         }
 
         private static void ConfigSwagger(WebApplicationBuilder builder)
