@@ -3,6 +3,7 @@ using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Core.Time;
 using Library.Database.Contexts.Public;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -110,7 +111,6 @@ namespace Service.WebAPI
             app.UseMiddleware<GlobalExceptionMiddleware>();
 
             app.UseCors("AllowSpecificOrigin");
-            app.UseAuthorization();
 
             app.MapControllers();
             app.Run();
