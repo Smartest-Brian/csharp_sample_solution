@@ -51,4 +51,13 @@ public class AuthController(IAuthService authService) : ControllerBase
         Result<TokenResponse> result = await authService.RefreshAsync(request);
         return result.Success ? Ok(result) : Unauthorized(result);
     }
+
+    [HttpPost("validate")]
+    public async Task<IActionResult> ValidateToken(
+        [FromBody] ValidateTokenRequest request
+    )
+    {
+        Result<UserResponse> result = await authService.ValidateTokenAsync(request.Token);
+        return result.Success ? Ok(result) : Unauthorized(result);
+    }
 }

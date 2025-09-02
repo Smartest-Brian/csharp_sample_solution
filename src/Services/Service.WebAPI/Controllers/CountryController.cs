@@ -49,7 +49,6 @@ namespace Service.WebAPI.Controllers
                 : StatusCode(StatusCodes.Status500InternalServerError, result);
         }
 
-        [Microsoft.AspNetCore.Authorization.Authorize]
         [HttpPost]
         public async Task<IActionResult> Insert(
             [FromBody] CreateCountryRequest request
@@ -58,7 +57,8 @@ namespace Service.WebAPI.Controllers
             string? authorization = Request.Headers["Authorization"].ToString();
             if (string.IsNullOrEmpty(authorization)) return Unauthorized();
 
-            ApiResponse<Result<UserInfoResponse>> authResponse = await authApi.GetUserInfoAsync(authorization);
+            ApiResponse<Result<UserInfoResponse>> authResponse = await authApi.ValidateTokenAsync(
+                new ValidateTokenRequest { Token = authorization });
 
             if (!authResponse.IsSuccessStatusCode || authResponse.Content?.Data == null || !authResponse.Content.Success)
             {

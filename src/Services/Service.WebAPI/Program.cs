@@ -1,14 +1,9 @@
-using System.Text;
-
 using Library.ApiClient.Extensions;
 using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Core.Time;
 using Library.Database.Contexts.Public;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 using Service.WebAPI.Services.Country;
@@ -39,24 +34,6 @@ namespace Service.WebAPI
         {
             builder.Services.AddScoped<ICountryService, CountryService>();
             builder.Services.AddTimezoneService();
-
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-                };
-            });
-
             builder.Services.AddAuthApiClient(builder.Configuration);
         }
 
@@ -133,8 +110,6 @@ namespace Service.WebAPI
             app.UseMiddleware<GlobalExceptionMiddleware>();
 
             app.UseCors("AllowSpecificOrigin");
-
-            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

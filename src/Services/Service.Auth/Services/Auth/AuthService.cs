@@ -3,6 +3,12 @@ using Library.Database.Contexts.Auth;
 using Library.Database.Models.Auth;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
+
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 using Service.Auth.Models.Auth;
 using Service.Auth.Services.Jwt;
@@ -14,7 +20,8 @@ public class AuthService(
     AuthDbContext db,
     IPasswordHasher passwordHasher,
     IJwtService jwtService,
-    ILogger<AuthService> logger
+    ILogger<AuthService> logger,
+    IConfiguration configuration
 ) : IAuthService
 {
     public async Task<Result<UserResponse>> RegisterAsync(RegisterRequest request)
@@ -172,6 +179,39 @@ public class AuthService(
         {
             logger.LogError(ex, "AuthService.RefreshAsync Error");
             throw;
+        }
+    }
+
+    public async Task<Result<UserResponse>> ValidateTokenAsync(string token)
+    {
+        try
+        {
+            string cleanToken = token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
+                ? token["Bearer ".Length..]
+                : token;
+
+            TokenValidationParameters parameters = new()
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!))
+            };
+
+            JwtSecurityTokenHandler handler = new();
+            ClaimsPrincipal principal = handler.ValidateToken(cleanToken, parameters, out _);
+
+            string? userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Result<UserResponse>.Fail("Invalid token");
+
+            return await GetUserByIdAsync(Guid.Parse(userId));
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "AuthService.ValidateTokenAsync Error");
+            return Result<UserResponse>.Fail("Invalid token");
         }
     }
 }
