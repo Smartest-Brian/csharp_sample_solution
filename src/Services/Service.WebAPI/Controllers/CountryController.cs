@@ -49,8 +49,8 @@ namespace Service.WebAPI.Controllers
                 : StatusCode(StatusCodes.Status500InternalServerError, result);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Insert(
+        [HttpPost("add")]
+        public async Task<IActionResult> InsertCountry(
             [FromBody] CreateCountryRequest request
         )
         {

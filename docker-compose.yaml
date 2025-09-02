@@ -33,25 +33,25 @@ services:
     depends_on:
       - postgres
 
-  #  schedule:
-  #    build:
-  #      context: .
-  #      dockerfile: src/Services/Service.ScheduleJob/Dockerfile
-  #    environment:
-  #      ASPNETCORE_ENVIRONMENT: Docker
-  #    depends_on:
-  #      - postgres
+#  schedule:
+#    build:
+#      context: .
+#      dockerfile: src/Services/Service.ScheduleJob/Dockerfile
+#    environment:
+#      ASPNETCORE_ENVIRONMENT: Docker
+#    depends_on:
+#      - postgres
 
-  graphql:
-    build:
-      context: .
-      dockerfile: src/Services/Service.GraphQL/Dockerfile
-    environment:
-      ASPNETCORE_ENVIRONMENT: Docker
-    ports:
-      - "8082:8080"
-    depends_on:
-      - postgres
+#  graphql:
+#    build:
+#      context: .
+#      dockerfile: src/Services/Service.GraphQL/Dockerfile
+#    environment:
+#      ASPNETCORE_ENVIRONMENT: Docker
+#    ports:
+#      - "8082:8080"
+#    depends_on:
+#      - postgres
 
 volumes:
   pgdata:
