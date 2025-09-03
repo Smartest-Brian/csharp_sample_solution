@@ -1,11 +1,10 @@
+using Library.ApiClient.Attributes;
 using Library.ApiClient.Models.Auth;
-using Library.ApiClient.Services.Auth;
 using Library.Core.Results;
 using Library.Database.Models.Public;
 
 using Microsoft.AspNetCore.Mvc;
 
-using Refit;
 
 using Service.WebAPI.Models.Country;
 using Service.WebAPI.Services.Country;
@@ -15,8 +14,7 @@ namespace Service.WebAPI.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class CountryController(
-        ICountryService countryService,
-        IAuthApi authApi
+        ICountryService countryService
     ) : ControllerBase
     {
         [HttpGet("list")]
@@ -50,22 +48,17 @@ namespace Service.WebAPI.Controllers
         }
 
         [HttpPost("add")]
+        [ValidateToken]
         public async Task<IActionResult> InsertCountry(
             [FromBody] CreateCountryRequest request
         )
         {
-            string? authorization = Request.Headers["Authorization"].ToString();
-            if (string.IsNullOrEmpty(authorization)) return Unauthorized();
-
-            ApiResponse<Result<UserInfoResponse>> authResponse = await authApi.ValidateTokenAsync(
-                new ValidateTokenRequest { Token = authorization });
-
-            if (!authResponse.IsSuccessStatusCode || authResponse.Content?.Data == null || !authResponse.Content.Success)
+            if (HttpContext.Items["UserInfo"] is not UserInfoResponse user)
             {
                 return Unauthorized();
             }
 
-            if (!authResponse.Content.Data.Roles.Contains("admin")) return Forbid();
+            if (!user.Roles.Contains("admin")) return Forbid();
 
             Result<CountryInfo> result = await countryService.AddCountryAsync(request);
             return result.Success
