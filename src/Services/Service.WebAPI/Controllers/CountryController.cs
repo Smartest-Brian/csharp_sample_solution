@@ -1,5 +1,4 @@
 using Library.ApiClient.Attributes;
-using Library.ApiClient.Models.Auth;
 using Library.Core.Results;
 using Library.Database.Models.Public;
 
@@ -34,19 +33,12 @@ namespace Service.WebAPI.Controllers
             return result.Success ? Ok(result) : NotFound(result);
         }
 
-        [ValidateToken]
+        [ValidateToken(Roles = "admin")]
         [HttpGet("localTime/{countryName}")]
         public async Task<IActionResult> GetLocalTime(
             string countryName
         )
         {
-            if (HttpContext.Items["TokenInfo"] is not ValidateTokenResponse tokenInfo)
-            {
-                return Unauthorized();
-            }
-
-            if (!tokenInfo.Roles.Contains("admin")) return Forbid();
-
             Result<LocalTimeResponse> result = await countryService.GetLocalTimeAsync(countryName);
             if (result.Success) return Ok(result);
             return result.Message == "Country not found"
@@ -54,7 +46,7 @@ namespace Service.WebAPI.Controllers
                 : StatusCode(StatusCodes.Status500InternalServerError, result);
         }
 
-        [ValidateToken]
+        [ValidateToken(Roles = "admin")]
         [HttpPost("add")]
         public async Task<IActionResult> InsertCountry(
             [FromBody] CreateCountryRequest request
