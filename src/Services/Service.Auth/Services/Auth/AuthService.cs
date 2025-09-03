@@ -126,6 +126,7 @@ public class AuthService(
                 Id = user.Id,
                 Username = user.Username,
                 Email = user.Email,
+                IsActive = user.IsActive,
                 Roles = user.Roles
             };
 
@@ -182,7 +183,7 @@ public class AuthService(
         }
     }
 
-    public async Task<Result<UserResponse>> ValidateTokenAsync(string token)
+    public async Task<Result<ValidateTokenResponse>> ValidateTokenAsync(string token)
     {
         try
         {
@@ -204,14 +205,27 @@ public class AuthService(
             ClaimsPrincipal principal = handler.ValidateToken(cleanToken, parameters, out _);
 
             string? userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId)) return Result<UserResponse>.Fail("Invalid token");
+            if (string.IsNullOrEmpty(userId)) return Result<ValidateTokenResponse>.Fail("Invalid token");
 
-            return await GetUserByIdAsync(Guid.Parse(userId));
+            Result<UserResponse> userInfo = await GetUserByIdAsync(Guid.Parse(userId));
+            if (!userInfo.Success) return Result<ValidateTokenResponse>.Fail("Get user info failed");
+
+            ValidateTokenResponse res = new()
+            {
+                Id = userInfo.Data!.Id,
+                Active = userInfo.Data.IsActive,
+                Username = userInfo.Data.Username,
+                Roles =  userInfo.Data.Roles,
+                Exp = 0,
+                Iat = 0
+            };
+
+            return Result<ValidateTokenResponse>.Ok(res);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "AuthService.ValidateTokenAsync Error");
-            return Result<UserResponse>.Fail("Invalid token");
+            return Result<ValidateTokenResponse>.Fail("Invalid token");
         }
     }
 }

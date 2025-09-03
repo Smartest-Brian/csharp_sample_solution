@@ -5,7 +5,6 @@ using Library.Database.Models.Public;
 
 using Microsoft.AspNetCore.Mvc;
 
-
 using Service.WebAPI.Models.Country;
 using Service.WebAPI.Services.Country;
 
@@ -35,11 +34,19 @@ namespace Service.WebAPI.Controllers
             return result.Success ? Ok(result) : NotFound(result);
         }
 
+        [ValidateToken]
         [HttpGet("localTime/{countryName}")]
         public async Task<IActionResult> GetLocalTime(
             string countryName
         )
         {
+            if (HttpContext.Items["TokenInfo"] is not ValidateTokenResponse tokenInfo)
+            {
+                return Unauthorized();
+            }
+
+            if (!tokenInfo.Roles.Contains("admin")) return Forbid();
+
             Result<LocalTimeResponse> result = await countryService.GetLocalTimeAsync(countryName);
             if (result.Success) return Ok(result);
             return result.Message == "Country not found"
@@ -47,19 +54,12 @@ namespace Service.WebAPI.Controllers
                 : StatusCode(StatusCodes.Status500InternalServerError, result);
         }
 
-        [HttpPost("add")]
         [ValidateToken]
+        [HttpPost("add")]
         public async Task<IActionResult> InsertCountry(
             [FromBody] CreateCountryRequest request
         )
         {
-            if (HttpContext.Items["UserInfo"] is not UserInfoResponse user)
-            {
-                return Unauthorized();
-            }
-
-            if (!user.Roles.Contains("admin")) return Forbid();
-
             Result<CountryInfo> result = await countryService.AddCountryAsync(request);
             return result.Success
                 ? Ok(result)

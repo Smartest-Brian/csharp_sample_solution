@@ -10,5 +10,5 @@ public interface IAuthService
     Task<Result<TokenResponse>> LoginAsync(LoginRequest request);
     Task<Result<UserResponse>> GetUserByIdAsync(Guid userId);
     Task<Result<TokenResponse>> RefreshAsync(RefreshRequest request);
-    Task<Result<UserResponse>> ValidateTokenAsync(string token);
+    Task<Result<ValidateTokenResponse>> ValidateTokenAsync(string token);
 }

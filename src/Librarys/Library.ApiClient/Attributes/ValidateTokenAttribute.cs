@@ -33,7 +33,7 @@ public class ValidateTokenAttribute : Attribute, IAsyncActionFilter
             return;
         }
 
-        ApiResponse<Result<UserInfoResponse>> response = await authApi.ValidateTokenAsync(new ValidateTokenRequest
+        ApiResponse<Result<ValidateTokenResponse>> response = await authApi.ValidateTokenAsync(new ValidateTokenRequest
         {
             Token = authorization
         });
@@ -44,9 +44,8 @@ public class ValidateTokenAttribute : Attribute, IAsyncActionFilter
             return;
         }
 
-        context.HttpContext.Items["UserInfo"] = response.Content.Data;
+        context.HttpContext.Items["TokenInfo"] = response.Content.Data;
 
         await next();
     }
 }
-

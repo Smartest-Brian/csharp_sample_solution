@@ -12,6 +12,6 @@ public interface IAuthApi
         [Header("Authorization")] string authorization);
 
     [Post("/api/auth/validate")]
-    Task<ApiResponse<Result<UserInfoResponse>>> ValidateTokenAsync(
+    Task<ApiResponse<Result<ValidateTokenResponse>>> ValidateTokenAsync(
         [Body] ValidateTokenRequest request);
 }
