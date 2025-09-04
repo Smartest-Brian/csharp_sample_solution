@@ -33,7 +33,7 @@ namespace Service.WebAPI.Controllers
             return result.Success ? Ok(result) : NotFound(result);
         }
 
-        [ValidateToken(Roles = "admin")]
+        [ValidateToken(Roles = new[] { "admin" })]
         [HttpGet("localTime/{countryName}")]
         public async Task<IActionResult> GetLocalTime(
             string countryName
@@ -46,7 +46,7 @@ namespace Service.WebAPI.Controllers
                 : StatusCode(StatusCodes.Status500InternalServerError, result);
         }
 
-        [ValidateToken(Roles = "admin")]
+        [ValidateToken(Roles = new[] { "admin" })]
         [HttpPost("add")]
         public async Task<IActionResult> InsertCountry(
             [FromBody] CreateCountryRequest request

@@ -17,12 +17,12 @@ namespace Library.ApiClient.Attributes;
 /// <summary>
 /// Action filter attribute that validates the Authorization token by calling the Auth API.
 /// If the token is invalid or missing, an <see cref="UnauthorizedResult"/> is returned.
-/// When the token is valid, the user information will be stored in <see cref="HttpContext.Items"/> with key <c>UserInfo</c>.
+/// When the token is valid, the token information will be stored in <see cref="HttpContext.Items"/> with key <see cref="HttpContextItemKeys.TokenInfo"/>.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class ValidateTokenAttribute : Attribute, IAsyncActionFilter
 {
-    public string? Roles { get; set; }
+    public string[]? Roles { get; set; }
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -62,10 +62,9 @@ public class ValidateTokenAttribute : Attribute, IAsyncActionFilter
         ValidateTokenResponse tokenInfo = response.Content.Data;
         context.HttpContext.Items[HttpContextItemKeys.TokenInfo] = tokenInfo;
 
-        if (!string.IsNullOrWhiteSpace(Roles))
+        if (Roles is { Length: > 0 })
         {
-            string[] requiredRoles = Roles.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            if (!requiredRoles.Any(role => tokenInfo.Roles.Contains(role)))
+            if (!Roles.Any(role => tokenInfo.Roles.Contains(role)))
             {
                 context.Result = new ForbidResult();
                 return;
