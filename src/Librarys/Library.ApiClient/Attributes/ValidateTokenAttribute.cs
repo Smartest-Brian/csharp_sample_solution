@@ -1,14 +1,13 @@
-using System;
-using System.Linq;
-
 using Library.ApiClient.Constants;
 using Library.ApiClient.Models.Auth;
 using Library.ApiClient.Services.Auth;
 using Library.Core.Results;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 
 using Refit;
 
@@ -26,7 +25,7 @@ public class ValidateTokenAttribute : Attribute, IAsyncActionFilter
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        if (!context.HttpContext.Request.Headers.TryGetValue("Authorization", out var header) || header.Count == 0)
+        if (!context.HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues header) || header.Count == 0)
         {
             context.Result = new UnauthorizedResult();
             return;
@@ -66,7 +65,14 @@ public class ValidateTokenAttribute : Attribute, IAsyncActionFilter
         {
             if (!Roles.Any(role => tokenInfo.Roles.Contains(role)))
             {
-                context.Result = new ForbidResult();
+                context.Result = new ObjectResult(new Result<object>
+                {
+                    Success = false,
+                    Message = "User does not have the required role permissions"
+                })
+                {
+                    StatusCode = StatusCodes.Status403Forbidden
+                };
                 return;
             }
         }
