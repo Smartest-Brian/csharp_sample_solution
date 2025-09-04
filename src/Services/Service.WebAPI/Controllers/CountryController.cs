@@ -15,7 +15,7 @@ public class CountryController(
     ICountryService countryService
 ) : ControllerBase
 {
-    [ValidateToken(Roles = ["admin"])]
+    [ValidateToken]
     [HttpGet("list")]
     public async Task<IActionResult> GetList()
     {
@@ -25,6 +25,7 @@ public class CountryController(
             : StatusCode(StatusCodes.Status500InternalServerError, result);
     }
 
+    [ValidateToken(Roles = ["user"])]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(
         int id
@@ -34,7 +35,7 @@ public class CountryController(
         return result.Success ? Ok(result) : NotFound(result);
     }
 
-    [ValidateToken(Roles = ["api"])]
+    [ValidateToken(Roles = ["admin", "api"])]
     [HttpGet("localTime/{countryName}")]
     public async Task<IActionResult> GetLocalTime(
         string countryName
