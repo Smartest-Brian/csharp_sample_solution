@@ -12,6 +12,7 @@ namespace Service.WebAPI.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class CountryController(
+    ILogger<CountryController> logger,
     ICountryService countryService
 ) : ControllerBase
 {
@@ -54,6 +55,7 @@ public class CountryController(
         [FromBody] CreateCountryRequest request
     )
     {
+        logger.LogInformation("Inserting country with request: {@Request}", request);
         Result<CountryInfo> result = await countryService.AddCountryAsync(request);
         return result.Success
             ? Ok(result)
