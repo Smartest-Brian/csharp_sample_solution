@@ -32,6 +32,7 @@ public class RabbitMqService(IOptions<RabbitMqOptions> options) : IRabbitMqServi
     public Task PublishAsync(string exchange, string routingKey, string message)
     {
         IModel channel = GetOrCreateChannel();
+        channel.ExchangeDeclare(exchange, ExchangeType.Direct, durable: true);
         byte[] body = Encoding.UTF8.GetBytes(message);
         channel.BasicPublish(exchange, routingKey, basicProperties: null, body: body);
         return Task.CompletedTask;
