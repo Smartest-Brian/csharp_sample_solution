@@ -11,27 +11,40 @@ services:
       - pgdata:/var/lib/postgresql/data # 把 pgdata 掛到容器內 data 目錄
       - ./infra/db/postgres/init:/docker-entrypoint-initdb.d:ro
 
-  auth:
+  rabbitmq:
     build:
-      context: .
-      dockerfile: src/Services/Service.Auth/Dockerfile
+      context: src/Librarys/Library.RabbitMQ
+      dockerfile: Dockerfile
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
     ports:
-      - "8080:8080"
-    depends_on:
-      - postgres
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
 
-  webapi:
-    build:
-      context: .
-      dockerfile: src/Services/Service.WebAPI/Dockerfile
-    environment:
-      ASPNETCORE_ENVIRONMENT: Docker
-    ports:
-      - "8081:8080"
-    depends_on:
-      - postgres
+#  auth:
+#    build:
+#      context: .
+#      dockerfile: src/Services/Service.Auth/Dockerfile
+#    environment:
+#      ASPNETCORE_ENVIRONMENT: Docker
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - postgres
+
+#  webapi:
+#    build:
+#      context: .
+#      dockerfile: src/Services/Service.WebAPI/Dockerfile
+#    environment:
+#      ASPNETCORE_ENVIRONMENT: Docker
+#    ports:
+#      - "8081:8080"
+#    depends_on:
+#      - postgres
 
 #  schedule:
 #    build:
@@ -55,3 +68,4 @@ services:
 
 volumes:
   pgdata:
+  rabbitmqdata:
