@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Auth", "src\Service
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.ApiClient", "src\Librarys\Library.ApiClient\Library.ApiClient.csproj", "{97475FCD-031B-469D-A24F-2F18D0BCB0E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.RabbitMQ", "src\Librarys\Library.RabbitMQ\Library.RabbitMQ.csproj", "{8AB175B8-730D-4E54-A7DF-F39C1E124187}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,6 +110,18 @@ Global
 		{97475FCD-031B-469D-A24F-2F18D0BCB0E1}.Release|x64.Build.0 = Release|Any CPU
 		{97475FCD-031B-469D-A24F-2F18D0BCB0E1}.Release|x86.ActiveCfg = Release|Any CPU
 		{97475FCD-031B-469D-A24F-2F18D0BCB0E1}.Release|x86.Build.0 = Release|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Debug|x64.Build.0 = Debug|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Debug|x86.Build.0 = Debug|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Release|x64.ActiveCfg = Release|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Release|x64.Build.0 = Release|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Release|x86.ActiveCfg = Release|Any CPU
+		{8AB175B8-730D-4E54-A7DF-F39C1E124187}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

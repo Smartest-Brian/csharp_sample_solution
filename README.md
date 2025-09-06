@@ -24,6 +24,8 @@ dotnet new classlib -n Library.Database -o src/Librarys/Library.Database -f net9
 
 dotnet new classlib -n Library.ApiClient -o src/Librarys/Library.ApiClient -f net9.0
 
+dotnet new classlib -n Library.RabbitMQ -o src/Librarys/Library.RabbitMQ -f net9.0
+
 ## add a project to the solution
 
 dotnet sln Solution.sln add src/Services/Service.WebAPI/Service.WebAPI.csproj
