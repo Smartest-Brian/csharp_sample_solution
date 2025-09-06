@@ -21,6 +21,7 @@ namespace Service.WebAPI
 
             ConfigBasic(builder);
             ConfigService(builder);
+            ConfigRabbitMq(builder);
             ConfigSwagger(builder);
             ConfigDatabase(builder);
             ConfigSerilog(builder);
@@ -37,9 +38,13 @@ namespace Service.WebAPI
         {
             builder.Services.AddScoped<ICountryService, CountryService>();
             builder.Services.AddTimezoneService();
+            builder.Services.AddAuthApiClient(builder.Configuration);
+        }
+
+        private static void ConfigRabbitMq(WebApplicationBuilder builder)
+        {
             builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
             builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
-            builder.Services.AddAuthApiClient(builder.Configuration);
         }
 
         private static void ConfigSwagger(WebApplicationBuilder builder)
