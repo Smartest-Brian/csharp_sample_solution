@@ -1,3 +1,5 @@
+using Library.RabbitMQ.Options;
+using Library.RabbitMQ.Services;
 using Library.ApiClient.Extensions;
 using Library.Core.Logging;
 using Library.Core.Middlewares;
@@ -35,6 +37,8 @@ namespace Service.WebAPI
         {
             builder.Services.AddScoped<ICountryService, CountryService>();
             builder.Services.AddTimezoneService();
+            builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
+            builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
             builder.Services.AddAuthApiClient(builder.Configuration);
         }
 

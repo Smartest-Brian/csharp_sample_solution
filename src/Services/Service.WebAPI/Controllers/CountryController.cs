@@ -1,3 +1,5 @@
+using Library.RabbitMQ.Services;
+using System.Text.Json;
 using Library.ApiClient.Attributes;
 using Library.Core.Results;
 using Library.Database.Models.Public;
@@ -13,6 +15,7 @@ namespace Service.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class CountryController(
     ILogger<CountryController> logger,
+    IRabbitMqService rabbitMqService,
     ICountryService countryService
 ) : ControllerBase
 {
@@ -57,6 +60,11 @@ public class CountryController(
     {
         logger.LogInformation("Inserting country with request: {@Request}", request);
         Result<CountryInfo> result = await countryService.AddCountryAsync(request);
+        if (result.Success && result.Data != null)
+        {
+            string message = JsonSerializer.Serialize(result.Data);
+            await rabbitMqService.PublishAsync("exchange.change_country_table", "key.change_country_table", message);
+        }
         return result.Success
             ? Ok(result)
             : StatusCode(StatusCodes.Status500InternalServerError, result);
