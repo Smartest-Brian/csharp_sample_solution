@@ -8,21 +8,22 @@ services:
       POSTGRES_DB: csharp_sample_solution_db
     ports: [ "5432:5432" ]
     volumes:
-      - pgdata:/var/lib/postgresql/data # 把 pgdata 掛到容器內 data 目錄
+      - pg_data:/var/lib/postgresql/data # 把 pg_data 掛到容器內 data 目錄
       - ./infra/db/postgres/init:/docker-entrypoint-initdb.d:ro
 
   rabbitmq:
     build:
       context: src/Librarys/Library.RabbitMQ
       dockerfile: Dockerfile
-    environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin
+    container_name: rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
     volumes:
-      - rabbitmqdata:/var/lib/rabbitmq
+      - rabbitmq_data:/var/lib/rabbitmq   # 保留資料持久化；不要再綁 definitions 檔
 
 #  auth:
 #    build:
@@ -67,5 +68,5 @@ services:
 #      - postgres
 
 volumes:
-  pgdata:
-  rabbitmqdata:
+  pg_data:
+  rabbitmq_data:
