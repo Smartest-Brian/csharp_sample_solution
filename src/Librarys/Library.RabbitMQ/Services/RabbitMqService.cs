@@ -41,6 +41,7 @@ public class RabbitMqService(IOptions<RabbitMqOptions> options) : IRabbitMqServi
     public void Subscribe(string queue, Action<string> onMessage)
     {
         IModel channel = GetOrCreateChannel();
+        channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
         EventingBasicConsumer consumer = new(channel);
         consumer.Received += (_, ea) =>
         {
