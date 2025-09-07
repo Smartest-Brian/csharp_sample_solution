@@ -9,17 +9,21 @@ public class CountryChangeService(IRabbitMqService rabbitMqService, ILogger<Coun
 {
     public void Subscribe()
     {
-        rabbitMqService.Subscribe("queue.change_country_table", message =>
-        {
-            CountryInfo? country = JsonSerializer.Deserialize<CountryInfo>(message);
-            if (country != null)
+        rabbitMqService.Subscribe(
+            "exchange.change_country_table",
+            "queue.change_country_table",
+            "key.change_country_table",
+            message =>
             {
-                logger.LogInformation("Received country change message: {@Country}", country);
-            }
-            else
-            {
-                logger.LogWarning("Failed to deserialize country info from message: {Message}", message);
-            }
-        });
+                CountryInfo? country = JsonSerializer.Deserialize<CountryInfo>(message);
+                if (country != null)
+                {
+                    logger.LogInformation("Received country change message: {@Country}", country);
+                }
+                else
+                {
+                    logger.LogWarning("Failed to deserialize country info from message: {Message}", message);
+                }
+            });
     }
 }
