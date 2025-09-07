@@ -1,6 +1,8 @@
 using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Public;
+using Library.RabbitMQ.Options;
+using Library.RabbitMQ.Services;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Quartz;
 
 using Service.ScheduleJob.Jobs;
+using Service.ScheduleJob.Services;
 
 namespace Service.ScheduleJob
 {
@@ -18,6 +21,8 @@ namespace Service.ScheduleJob
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             ConfigBasic(builder);
+            ConfigService(builder);
+            ConfigRabbitMq(builder);
             ConfigDatabase(builder);
             ConfigQuartz(builder);
             ConfigSerilog(builder);
@@ -30,10 +35,21 @@ namespace Service.ScheduleJob
             builder.Services.AddCors();
         }
 
+        private static void ConfigService(WebApplicationBuilder builder)
+        {
+            builder.Services.AddSingleton<ICountryChangeService, CountryChangeService>();
+        }
+
+        private static void ConfigRabbitMq(WebApplicationBuilder builder)
+        {
+            builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
+            builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
+        }
+
         private static void ConfigDatabase(WebApplicationBuilder builder)
         {
             var connectionString = builder.Configuration.GetConnectionString("PostgreSql");
-            if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
+            if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException("Connection String Not Found.");
 
             builder.Services.AddDbContext<PublicDbContext>(opt =>
             {
@@ -80,6 +96,10 @@ namespace Service.ScheduleJob
             app.UseAuthorization();
 
             app.MapControllers();
+
+            var countryChangeService = app.Services.GetRequiredService<ICountryChangeService>();
+            countryChangeService.Subscribe();
+
             app.Run();
         }
     }
