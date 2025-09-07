@@ -50,19 +50,20 @@ namespace Service.ScheduleJob
             {
                 // 註冊 Job
 
-                JobKey timeReportJobKey = new JobKey("TimeReportJob");
+                JobKey timeReportJobKey = new ("JOB-TimeReport", "STATIC");
+                TriggerKey timeReportTriggerKey = new ("Trigger-TimeReport", "STATIC");
                 q.AddJob<TimeReportJob>(opts => opts.WithIdentity(timeReportJobKey));
                 q.AddTrigger(opts => opts
                     .ForJob(timeReportJobKey)
-                    .WithIdentity("TimeReportJob-trigger")
+                    .WithIdentity(timeReportTriggerKey)
                     .WithCronSchedule("0 * * * * ?")
                 );
 
-                JobKey countryJobKey = new JobKey("JOB-CountryUpdated", "STATIC");
+                JobKey countryUpdatedJobKey = new ("JOB-CountryUpdated", "STATIC");
                 q.AddJob<CountryUpdatedJob>(opts => opts
-                        .WithIdentity(countryJobKey)
+                        .WithIdentity(countryUpdatedJobKey)
                         .StoreDurably() // durable 才能只用 TriggerJob 觸發
-                    // .RequestRecovery() // 可選：當 Scheduler 異常後恢復
+                        .RequestRecovery() // 可選：當 Scheduler 異常後恢復
                 );
             });
 
@@ -78,7 +79,6 @@ namespace Service.ScheduleJob
             ISchedulerFactory schedulerFactory = app.Services.GetRequiredService<ISchedulerFactory>();
             IScheduler scheduler = schedulerFactory.GetScheduler().GetAwaiter().GetResult();
             RmqEventDispatcher.Register("key.change_country_table", async () => { await scheduler.TriggerJob(new JobKey("JOB-CountryUpdated", "STATIC")); });
-
         }
 
 
