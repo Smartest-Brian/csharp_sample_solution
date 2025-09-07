@@ -8,20 +8,12 @@ public class RabbitMqConsumerService(
     ILogger<RabbitMqConsumerService> logger,
     string queueName) : IHostedService
 {
-    private readonly IRabbitMqService _rabbitMqService = rabbitMqService;
-    private readonly ILogger<RabbitMqConsumerService> _logger = logger;
-    private readonly string _queueName = queueName;
-
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _rabbitMqService.Subscribe(_queueName, message =>
-        {
-            _logger.LogInformation("Receive RabbitMQ message: {Message}", message);
-        });
+        rabbitMqService.Subscribe(queueName, message => { logger.LogInformation("Receive RabbitMQ message: {Message}", message); });
 
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
-

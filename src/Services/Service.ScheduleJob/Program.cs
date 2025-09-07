@@ -71,12 +71,12 @@ namespace Service.ScheduleJob
         {
             builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
             builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
-            string queueName = builder.Configuration.GetValue<string>("RabbitMq:Queue") ?? "schedule-job-queue";
+
             builder.Services.AddHostedService(sp =>
                 new RabbitMqConsumerService(
                     sp.GetRequiredService<IRabbitMqService>(),
                     sp.GetRequiredService<ILogger<RabbitMqConsumerService>>(),
-                    queueName));
+                    "queue.change_country_table"));
         }
 
         private static void ConfigSerilog(WebApplicationBuilder builder) => builder.UseSerilogLogging();
