@@ -2,6 +2,8 @@ using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Public;
 using Library.RabbitMQ;
+using Library.RabbitMQ.Options;
+using Library.RabbitMQ.Services;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,7 @@ namespace Service.ScheduleJob
             ConfigBasic(builder);
             ConfigDatabase(builder);
             ConfigQuartz(builder);
+            ConfigRabbitMq(builder);
             ConfigSerilog(builder);
             ConfigApp(builder);
         }
@@ -72,6 +75,13 @@ namespace Service.ScheduleJob
         }
 
         private static void ConfigSerilog(WebApplicationBuilder builder) => builder.UseSerilogLogging();
+
+        private static void ConfigRabbitMq(WebApplicationBuilder builder)
+        {
+            builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
+            builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
+            builder.Services.AddHostedService<RabbitListenerHostedService>();
+        }
 
         private static void ConfigRmqEventDispatcher(WebApplication app)
         {

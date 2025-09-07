@@ -5,6 +5,7 @@ using Library.RabbitMQ.Options;
 using Microsoft.Extensions.Options;
 
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 
 namespace Library.RabbitMQ.Services;
 
@@ -47,7 +48,21 @@ public class RabbitMqService(IOptions<RabbitMqOptions> options) : IRabbitMqServi
         return Task.CompletedTask;
     }
 
-    public void Subscribe(string queue, Action<string> onMessage) => throw new NotImplementedException();
+    public void Subscribe(string queue, Func<string, Task> onMessage)
+    {
+        IModel channel = GetOrCreateChannel();
+        channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false);
+
+        AsyncEventingBasicConsumer consumer = new(channel);
+        consumer.Received += async (_, ea) =>
+        {
+            string body = Encoding.UTF8.GetString(ea.Body.Span);
+            await onMessage(body);
+            channel.BasicAck(ea.DeliveryTag, multiple: false);
+        };
+
+        channel.BasicConsume(queue: queue, autoAck: false, consumer: consumer);
+    }
 
     public void Dispose()
     {
