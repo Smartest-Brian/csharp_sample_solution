@@ -11,7 +11,7 @@ public class RabbitListenerHostedService(IRabbitMqService rabbitMqService, ILogg
     private const string QueueName = "queue.change_country_table";
     private const string EventKey = "key.change_country_table";
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _rabbitMqService.Subscribe(QueueName, async message =>
         {
@@ -19,6 +19,6 @@ public class RabbitListenerHostedService(IRabbitMqService rabbitMqService, ILogg
             await RmqEventDispatcher.DispatchAsync(EventKey);
         });
 
-        return Task.CompletedTask;
+        await Task.Delay(Timeout.Infinite, stoppingToken);
     }
 }
