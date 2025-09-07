@@ -6,11 +6,11 @@ using Library.RabbitMQ.Services;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 using Quartz;
 
 using Service.ScheduleJob.Jobs;
-using Service.ScheduleJob.Services;
 
 namespace Service.ScheduleJob
 {
@@ -71,7 +71,12 @@ namespace Service.ScheduleJob
         {
             builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
             builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
-            builder.Services.AddHostedService<RabbitMqConsumerService>();
+            string queueName = builder.Configuration.GetValue<string>("RabbitMq:Queue") ?? "schedule-job-queue";
+            builder.Services.AddHostedService(sp =>
+                new RabbitMqConsumerService(
+                    sp.GetRequiredService<IRabbitMqService>(),
+                    sp.GetRequiredService<ILogger<RabbitMqConsumerService>>(),
+                    queueName));
         }
 
         private static void ConfigSerilog(WebApplicationBuilder builder) => builder.UseSerilogLogging();
