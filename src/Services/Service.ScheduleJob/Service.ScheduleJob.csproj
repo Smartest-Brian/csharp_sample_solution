@@ -14,7 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Librarys\Library.ApiClient\Library.ApiClient.csproj" />
     <ProjectReference Include="..\..\Librarys\Library.Core\Library.Core.csproj" />
     <ProjectReference Include="..\..\Librarys\Library.Database\Library.Database.csproj" />
+    <ProjectReference Include="..\..\Librarys\Library.RabbitMQ\Library.RabbitMQ.csproj" />
   </ItemGroup>
 </Project>
