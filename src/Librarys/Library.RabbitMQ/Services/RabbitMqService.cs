@@ -38,8 +38,12 @@ public class RabbitMqService(IOptions<RabbitMqOptions> options) : IRabbitMqServi
     {
         IModel channel = GetOrCreateChannel();
         channel.ExchangeDeclare(exchange, ExchangeType.Direct, durable: true);
+
+        IBasicProperties? properties = channel.CreateBasicProperties();
+        properties.Expiration = (10 * 60 * 1000).ToString(); // 10 minutes
+
         byte[] body = Encoding.UTF8.GetBytes(message);
-        channel.BasicPublish(exchange, routingKey, basicProperties: null, body: body);
+        channel.BasicPublish(exchange, routingKey, basicProperties: properties, body: body);
         return Task.CompletedTask;
     }
 
