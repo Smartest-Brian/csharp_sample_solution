@@ -24,7 +24,9 @@ public class RabbitMqService(IOptions<RabbitMqOptions> options) : IRabbitMqServi
                 HostName = _options.HostName,
                 Port = _options.Port,
                 UserName = _options.UserName,
-                Password = _options.Password
+                Password = _options.Password,
+                AutomaticRecoveryEnabled = true,
+                DispatchConsumersAsync = true
             };
             _connection = factory.CreateConnection();
         }
@@ -44,20 +46,6 @@ public class RabbitMqService(IOptions<RabbitMqOptions> options) : IRabbitMqServi
 
     public void Subscribe(string queue, Action<string> onMessage) => throw new NotImplementedException();
 
-    public void Subscribe(string exchange, string queue, string routingKey, Action<string> onMessage)
-    {
-        IModel channel = GetOrCreateChannel();
-        channel.ExchangeDeclare(exchange, ExchangeType.Topic, durable: true);
-        channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
-        channel.QueueBind(queue, exchange, routingKey);
-        EventingBasicConsumer consumer = new(channel);
-        consumer.Received += (_, ea) =>
-        {
-            string body = Encoding.UTF8.GetString(ea.Body.ToArray());
-            onMessage(body);
-        };
-        channel.BasicConsume(queue, autoAck: true, consumer: consumer);
-    }
 
     public void Dispose()
     {
