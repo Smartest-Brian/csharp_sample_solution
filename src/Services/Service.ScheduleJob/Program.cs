@@ -1,6 +1,7 @@
 using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Public;
+using Library.RabbitMQ;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +33,7 @@ namespace Service.ScheduleJob
 
         private static void ConfigDatabase(WebApplicationBuilder builder)
         {
-            var connectionString = builder.Configuration.GetConnectionString("PostgreSql");
+            string? connectionString = builder.Configuration.GetConnectionString("PostgreSql");
             if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
 
             builder.Services.AddDbContext<PublicDbContext>(opt =>
@@ -48,14 +49,20 @@ namespace Service.ScheduleJob
             builder.Services.AddQuartz(q =>
             {
                 // 註冊 Job
-                var jobKey = new JobKey("TimeReportJob");
-                q.AddJob<TimeReportJob>(opts => opts.WithIdentity(jobKey));
 
-                // 建立觸發器：每分鐘執行一次
+                JobKey timeReportJobKey = new JobKey("TimeReportJob");
+                q.AddJob<TimeReportJob>(opts => opts.WithIdentity(timeReportJobKey));
                 q.AddTrigger(opts => opts
-                        .ForJob(jobKey)
-                        .WithIdentity("TimeReportJob-trigger")
-                        .WithCronSchedule("0 * * * * ?") // Quartz Cron：每分鐘 0 秒觸發
+                    .ForJob(timeReportJobKey)
+                    .WithIdentity("TimeReportJob-trigger")
+                    .WithCronSchedule("0 * * * * ?")
+                );
+
+                JobKey countryJobKey = new JobKey("JOB-CountryUpdated", "STATIC");
+                q.AddJob<CountryUpdatedJob>(opts => opts
+                        .WithIdentity(countryJobKey)
+                        .StoreDurably() // durable 才能只用 TriggerJob 觸發
+                    // .RequestRecovery() // 可選：當 Scheduler 異常後恢復
                 );
             });
 
@@ -64,6 +71,15 @@ namespace Service.ScheduleJob
         }
 
         private static void ConfigSerilog(WebApplicationBuilder builder) => builder.UseSerilogLogging();
+
+        private static void ConfigRmqEventDispatcher(WebApplication app)
+        {
+            // 取得 Quartz Scheduler 並註冊 RabbitMQ 事件
+            ISchedulerFactory schedulerFactory = app.Services.GetRequiredService<ISchedulerFactory>();
+            IScheduler scheduler = schedulerFactory.GetScheduler().GetAwaiter().GetResult();
+            RmqEventDispatcher.Register("key.change_country_table", async () => { await scheduler.TriggerJob(new JobKey("JOB-CountryUpdated", "STATIC")); });
+
+        }
 
 
         private static void ConfigApp(WebApplicationBuilder builder)
@@ -78,6 +94,8 @@ namespace Service.ScheduleJob
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            ConfigRmqEventDispatcher(app);
 
             app.MapControllers();
             app.Run();

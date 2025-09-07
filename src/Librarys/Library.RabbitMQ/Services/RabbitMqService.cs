@@ -43,15 +43,6 @@ public class RabbitMqService(IOptions<RabbitMqOptions> options) : IRabbitMqServi
         return Task.CompletedTask;
     }
 
-    public Task RmqEventDispatcher(string queue, string message)
-    {
-        IModel channel = GetOrCreateChannel();
-        channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
-        byte[] body = Encoding.UTF8.GetBytes(message);
-        channel.BasicPublish(exchange: string.Empty, routingKey: queue, basicProperties: null, body: body);
-        return Task.CompletedTask;
-    }
-
     public void Subscribe(string queue, Action<string> onMessage) => throw new NotImplementedException();
 
     public void Dispose()
