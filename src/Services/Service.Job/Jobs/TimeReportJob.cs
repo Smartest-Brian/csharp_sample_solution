@@ -1,6 +1,6 @@
 using Quartz;
 
-namespace Service.ScheduleJob.Jobs;
+namespace Service.Job.Jobs;
 
 public class TimeReportJob : IJob
 {

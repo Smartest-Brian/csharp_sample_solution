@@ -14,7 +14,7 @@ dotnet new webapi -n Service.WebAPI --use-controllers -o src/Services/Service.We
 
 dotnet new webapi -n Service.GraphQL -o src/Services/Service.GraphQL -f net9.0
 
-dotnet new worker -n Service.ScheduleJob -o src/Services/Service.ScheduleJob -f net9.0
+dotnet new webapi -n Service.Job -o src/Services/Service.Job -f net9.0
 
 ## create a library
 
@@ -25,6 +25,8 @@ dotnet new classlib -n Library.Database -o src/Librarys/Library.Database -f net9
 dotnet new classlib -n Library.ApiClient -o src/Librarys/Library.ApiClient -f net9.0
 
 dotnet new classlib -n Library.RabbitMQ -o src/Librarys/Library.RabbitMQ -f net9.0
+
+dotnet new classlib -n Library.Quartz -o src/Librarys/Library.Quartz -f net9.0
 
 ## add a project to the solution
 
