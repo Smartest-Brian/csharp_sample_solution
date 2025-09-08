@@ -1,17 +1,14 @@
-using System.Text;
-
 using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Auth;
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 using Service.Auth.Options;
 using Service.Auth.Services.Auth;
 using Service.Auth.Services.Jwt;
 using Service.Auth.Services.Password;
+using Service.Auth.Extensions;
 
 namespace Service.Auth
 {
@@ -42,24 +39,7 @@ namespace Service.Auth
             builder.Services.AddScoped<IAuthService, AuthService>();
 
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
-            JwtOptions jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!;
-
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtOptions.Issuer,
-                    ValidAudience = jwtOptions.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key))
-                };
-            });
+            builder.Services.AddJwtAuthentication();
         }
 
         private static void ConfigSwagger(WebApplicationBuilder builder)
