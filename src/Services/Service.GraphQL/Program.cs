@@ -29,7 +29,7 @@ namespace Service.GraphQL
 
         private static void ConfigDatabase(WebApplicationBuilder builder)
         {
-            var connectionString = builder.Configuration.GetConnectionString("PostgreSql");
+            string? connectionString = builder.Configuration.GetConnectionString("PostgreSql");
             if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
 
             builder.Services.AddDbContext<PublicDbContext>(opt =>
