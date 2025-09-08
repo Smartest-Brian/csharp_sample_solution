@@ -5,15 +5,20 @@ using System.Text;
 
 using Library.Database.Models.Auth;
 
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+
+using Service.Auth.Options;
 
 namespace Service.Auth.Services.Jwt;
 
-public class JwtService(IConfiguration configuration) : IJwtService
+public class JwtService(IOptions<JwtOptions> options) : IJwtService
 {
+    private readonly JwtOptions _options = options.Value;
+
     public string GenerateAccessToken(UserInfo user)
     {
-        SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
+        SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Key));
         SigningCredentials signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         Claim[] claims =
@@ -23,10 +28,10 @@ public class JwtService(IConfiguration configuration) : IJwtService
         ];
 
         JwtSecurityToken token = new JwtSecurityToken(
-            issuer: configuration["Jwt:Issuer"],
-            audience: configuration["Jwt:Audience"],
+            issuer: _options.Issuer,
+            audience: _options.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(int.Parse(configuration["Jwt:AccessTokenExpiresMinutes"] ?? "30")),
+            expires: DateTime.UtcNow.AddMinutes(_options.AccessTokenExpiresMinutes),
             signingCredentials: signingCredentials
         );
 
@@ -39,5 +44,5 @@ public class JwtService(IConfiguration configuration) : IJwtService
         return Convert.ToBase64String(bytes);
     }
 
-    public int RefreshTokenExpiryDays => int.Parse(configuration["Jwt:RefreshTokenExpiresDays"] ?? "7");
+    public int RefreshTokenExpiryDays => _options.RefreshTokenExpiresDays;
 }

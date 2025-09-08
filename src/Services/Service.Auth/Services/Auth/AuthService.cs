@@ -4,13 +4,14 @@ using Library.Database.Models.Auth;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 using Service.Auth.Models.Auth;
+using Service.Auth.Options;
 using Service.Auth.Services.Jwt;
 using Service.Auth.Services.Password;
 
@@ -21,9 +22,10 @@ public class AuthService(
     IPasswordHasher passwordHasher,
     IJwtService jwtService,
     ILogger<AuthService> logger,
-    IConfiguration configuration
+    IOptions<JwtOptions> jwtOptions
 ) : IAuthService
 {
+    private readonly JwtOptions _jwtOptions = jwtOptions.Value;
     public async Task<Result<UserResponse>> RegisterAsync(RegisterRequest request)
     {
         try
@@ -196,9 +198,9 @@ public class AuthService(
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = configuration["Jwt:Issuer"],
-                ValidAudience = configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!))
+                ValidIssuer = _jwtOptions.Issuer,
+                ValidAudience = _jwtOptions.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key))
             };
 
             JwtSecurityTokenHandler handler = new();
