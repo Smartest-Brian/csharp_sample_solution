@@ -9,98 +9,97 @@ using Quartz;
 
 using Service.Job.Jobs;
 
-namespace Service.Job
+namespace Service.Job;
+
+internal static class Program
 {
-    internal static class Program
+    private static void Main(string[] args)
     {
-        private static void Main(string[] args)
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+        ConfigBasic(builder);
+        ConfigDatabase(builder);
+        ConfigQuartz(builder);
+        ConfigSerilog(builder);
+        ConfigApp(builder);
+    }
+
+    private static void ConfigBasic(WebApplicationBuilder builder)
+    {
+        builder.Services.AddControllers();
+        builder.Services.AddCors();
+    }
+
+    private static void ConfigDatabase(WebApplicationBuilder builder)
+    {
+        string? connectionString = builder.Configuration.GetConnectionString("PostgreSql");
+        if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
+
+        builder.Services.AddDbContext<PublicDbContext>(opt =>
         {
-            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+            opt.UseNpgsql(connectionString);
+            opt.EnableSensitiveDataLogging();
+        });
+    }
 
-            ConfigBasic(builder);
-            ConfigDatabase(builder);
-            ConfigQuartz(builder);
-            ConfigSerilog(builder);
-            ConfigApp(builder);
-        }
-
-        private static void ConfigBasic(WebApplicationBuilder builder)
+    private static void ConfigQuartz(WebApplicationBuilder builder)
+    {
+        // 加入 Quartz
+        builder.Services.AddQuartz(q =>
         {
-            builder.Services.AddControllers();
-            builder.Services.AddCors();
-        }
+            // 註冊 Job
 
-        private static void ConfigDatabase(WebApplicationBuilder builder)
-        {
-            string? connectionString = builder.Configuration.GetConnectionString("PostgreSql");
-            if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
+            JobKey timeReportJobKey = new("JOB-TimeReport", "STATIC");
+            TriggerKey timeReportTriggerKey = new("Trigger-TimeReport", "STATIC");
+            q.AddJob<TimeReportJob>(opts => opts.WithIdentity(timeReportJobKey));
+            q.AddTrigger(opts => opts
+                .ForJob(timeReportJobKey)
+                .WithIdentity(timeReportTriggerKey)
+                .WithCronSchedule("0 * * * * ?")
+            );
 
-            builder.Services.AddDbContext<PublicDbContext>(opt =>
-            {
-                opt.UseNpgsql(connectionString);
-                opt.EnableSensitiveDataLogging();
-            });
-        }
+            JobKey countryUpdatedJobKey = new("JOB-CountryUpdated", "STATIC");
+            q.AddJob<CountryUpdatedJob>(opts => opts
+                    .WithIdentity(countryUpdatedJobKey)
+                    .StoreDurably() // durable 才能只用 TriggerJob 觸發
+                    .RequestRecovery() // 可選：當 Scheduler 異常後恢復
+            );
+        });
 
-        private static void ConfigQuartz(WebApplicationBuilder builder)
-        {
-            // 加入 Quartz
-            builder.Services.AddQuartz(q =>
-            {
-                // 註冊 Job
+        // 啟用 Quartz Hosted Service
+        builder.Services.AddQuartzHostedService(opt => { opt.WaitForJobsToComplete = true; });
+    }
 
-                JobKey timeReportJobKey = new("JOB-TimeReport", "STATIC");
-                TriggerKey timeReportTriggerKey = new("Trigger-TimeReport", "STATIC");
-                q.AddJob<TimeReportJob>(opts => opts.WithIdentity(timeReportJobKey));
-                q.AddTrigger(opts => opts
-                    .ForJob(timeReportJobKey)
-                    .WithIdentity(timeReportTriggerKey)
-                    .WithCronSchedule("0 * * * * ?")
-                );
+    private static void ConfigSerilog(WebApplicationBuilder builder)
+    {
+        builder.UseSerilogLogging();
+    }
 
-                JobKey countryUpdatedJobKey = new("JOB-CountryUpdated", "STATIC");
-                q.AddJob<CountryUpdatedJob>(opts => opts
-                        .WithIdentity(countryUpdatedJobKey)
-                        .StoreDurably() // durable 才能只用 TriggerJob 觸發
-                        .RequestRecovery() // 可選：當 Scheduler 異常後恢復
-                );
-            });
+    private static void ConfigRmqEventDispatcher(WebApplication app)
+    {
+        // 取得 Quartz Scheduler 並註冊 RabbitMQ 事件
+        ISchedulerFactory schedulerFactory = app.Services.GetRequiredService<ISchedulerFactory>();
+        IScheduler scheduler = schedulerFactory.GetScheduler().GetAwaiter().GetResult();
 
-            // 啟用 Quartz Hosted Service
-            builder.Services.AddQuartzHostedService(opt => { opt.WaitForJobsToComplete = true; });
-        }
+        RmqEventDispatcher.Register("key.change_country_table", async () => { await scheduler.TriggerJob(new JobKey("JOB-CountryUpdated", "STATIC")); });
+    }
 
-        private static void ConfigSerilog(WebApplicationBuilder builder)
-        {
-            builder.UseSerilogLogging();
-        }
+    private static void ConfigApp(WebApplicationBuilder builder)
+    {
+        WebApplication app = builder.Build();
 
-        private static void ConfigRmqEventDispatcher(WebApplication app)
-        {
-            // 取得 Quartz Scheduler 並註冊 RabbitMQ 事件
-            ISchedulerFactory schedulerFactory = app.Services.GetRequiredService<ISchedulerFactory>();
-            IScheduler scheduler = schedulerFactory.GetScheduler().GetAwaiter().GetResult();
+        app.UseHttpsRedirection();
 
-            RmqEventDispatcher.Register("key.change_country_table", async () => { await scheduler.TriggerJob(new JobKey("JOB-CountryUpdated", "STATIC")); });
-        }
+        app.UseMiddleware<RequestIdMiddleware>();
 
-        private static void ConfigApp(WebApplicationBuilder builder)
-        {
-            WebApplication app = builder.Build();
+        app.UseCors("AllowSpecificOrigin");
 
-            app.UseHttpsRedirection();
+        app.UseAuthentication();
+        app.UseAuthorization();
 
-            app.UseMiddleware<RequestIdMiddleware>();
+        ConfigRmqEventDispatcher(app);
 
-            app.UseCors("AllowSpecificOrigin");
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            ConfigRmqEventDispatcher(app);
-
-            app.MapControllers();
-            app.Run();
-        }
+        app.MapControllers();
+        app.Run();
     }
 }

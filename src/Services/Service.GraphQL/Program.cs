@@ -6,60 +6,59 @@ using Microsoft.EntityFrameworkCore;
 
 using Service.GraphQL.GraphQL;
 
-namespace Service.GraphQL
+namespace Service.GraphQL;
+
+internal static class Program
 {
-    internal static class Program
+    private static void Main(string[] args)
     {
-        private static void Main(string[] args)
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+        ConfigBasic(builder);
+        ConfigDatabase(builder);
+        ConfigSerilog(builder);
+        ConfigGraphql(builder);
+        ConfigApp(builder);
+    }
+
+    private static void ConfigBasic(WebApplicationBuilder builder)
+    {
+        builder.Services.AddControllers();
+        builder.Services.AddCors();
+    }
+
+    private static void ConfigDatabase(WebApplicationBuilder builder)
+    {
+        string? connectionString = builder.Configuration.GetConnectionString("PostgreSql");
+        if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
+
+        builder.Services.AddDbContext<PublicDbContext>(opt =>
         {
-            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+            opt.UseNpgsql(connectionString);
+            opt.EnableSensitiveDataLogging();
+        });
+    }
 
-            ConfigBasic(builder);
-            ConfigDatabase(builder);
-            ConfigSerilog(builder);
-            ConfigGraphql(builder);
-            ConfigApp(builder);
-        }
+    private static void ConfigSerilog(WebApplicationBuilder builder) => builder.UseSerilogLogging();
 
-        private static void ConfigBasic(WebApplicationBuilder builder)
-        {
-            builder.Services.AddControllers();
-            builder.Services.AddCors();
-        }
+    private static void ConfigGraphql(WebApplicationBuilder builder)
+    {
+        builder.Services
+            .AddGraphQLServer()
+            .AddQueryType<Query>()
+            .AddMutationType<Mutation>()
+            .AddSubscriptionType<Subscription>()
+            .AddInMemorySubscriptions();
+    }
 
-        private static void ConfigDatabase(WebApplicationBuilder builder)
-        {
-            string? connectionString = builder.Configuration.GetConnectionString("PostgreSql");
-            if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
+    private static void ConfigApp(WebApplicationBuilder builder)
+    {
+        WebApplication app = builder.Build();
 
-            builder.Services.AddDbContext<PublicDbContext>(opt =>
-            {
-                opt.UseNpgsql(connectionString);
-                opt.EnableSensitiveDataLogging();
-            });
-        }
+        app.UseMiddleware<RequestIdMiddleware>();
 
-        private static void ConfigSerilog(WebApplicationBuilder builder) => builder.UseSerilogLogging();
-
-        private static void ConfigGraphql(WebApplicationBuilder builder)
-        {
-            builder.Services
-                .AddGraphQLServer()
-                .AddQueryType<Query>()
-                .AddMutationType<Mutation>()
-                .AddSubscriptionType<Subscription>()
-                .AddInMemorySubscriptions();
-        }
-
-        private static void ConfigApp(WebApplicationBuilder builder)
-        {
-            WebApplication app = builder.Build();
-
-            app.UseMiddleware<RequestIdMiddleware>();
-
-            app.UseWebSockets(); // WebSocket 必備
-            app.MapGraphQL(); // 預設路徑 /graphql
-            app.Run();
-        }
+        app.UseWebSockets(); // WebSocket 必備
+        app.MapGraphQL(); // 預設路徑 /graphql
+        app.Run();
     }
 }
