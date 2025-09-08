@@ -39,7 +39,10 @@ internal static class Program
         });
     }
 
-    private static void ConfigSerilog(WebApplicationBuilder builder) => builder.UseSerilogLogging();
+    private static void ConfigSerilog(WebApplicationBuilder builder)
+    {
+        builder.UseSerilogLogging();
+    }
 
     private static void ConfigGraphql(WebApplicationBuilder builder)
     {

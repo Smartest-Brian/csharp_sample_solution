@@ -1,10 +1,10 @@
-using Library.RabbitMQ.Options;
-using Library.RabbitMQ.Services;
 using Library.ApiClient.Extensions;
 using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Core.Time;
 using Library.Database.Contexts.Public;
+using Library.RabbitMQ.Options;
+using Library.RabbitMQ.Services;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
