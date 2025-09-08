@@ -2,12 +2,14 @@ using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Public;
 using Library.RabbitMQ;
+using Library.RabbitMQ.Options;
 
 using Microsoft.EntityFrameworkCore;
 
 using Quartz;
 
 using Service.Job.Jobs;
+using Service.Job.RabbitMq;
 
 namespace Service.Job;
 
@@ -20,6 +22,7 @@ internal static class Program
         ConfigBasic(builder);
         ConfigDatabase(builder);
         ConfigQuartz(builder);
+        ConfigRabbitMq(builder);
         ConfigSerilog(builder);
         ConfigApp(builder);
     }
@@ -73,6 +76,12 @@ internal static class Program
     private static void ConfigSerilog(WebApplicationBuilder builder)
     {
         builder.UseSerilogLogging();
+    }
+
+    private static void ConfigRabbitMq(WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
+        builder.Services.AddHostedService<RmqHostService>();
     }
 
     private static void ConfigRmqEventDispatcher(WebApplication app)
