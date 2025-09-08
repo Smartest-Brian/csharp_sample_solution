@@ -3,12 +3,13 @@ using Library.Core.Middlewares;
 using Library.Database.Contexts.Auth;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
+using Service.Auth.Extensions;
 using Service.Auth.Options;
 using Service.Auth.Services.Auth;
 using Service.Auth.Services.Jwt;
 using Service.Auth.Services.Password;
-using Service.Auth.Extensions;
 
 namespace Service.Auth
 {
@@ -19,6 +20,7 @@ namespace Service.Auth
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             ConfigBasic(builder);
+            ConfigOption(builder);
             ConfigService(builder);
             ConfigSwagger(builder);
             ConfigDatabase(builder);
@@ -32,13 +34,17 @@ namespace Service.Auth
             builder.Services.AddCors();
         }
 
+        private static void ConfigOption(WebApplicationBuilder builder)
+        {
+            builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+        }
+
         private static void ConfigService(WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
 
-            builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
             builder.Services.AddJwtAuthentication();
         }
 
@@ -47,31 +53,31 @@ namespace Service.Auth
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Auth API",
                     Version = "v1"
                 });
 
                 // 加入 JWT 驗證設定
-                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                    Type = SecuritySchemeType.Http,
                     Scheme = "bearer",
                     BearerFormat = "JWT",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    In = ParameterLocation.Header,
                     Description = "請輸入 JWT Token，格式: Bearer {your token}"
                 });
 
-                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
-                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                        new OpenApiSecurityScheme
                         {
-                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                            Reference = new OpenApiReference
                             {
-                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                                Type = ReferenceType.SecurityScheme,
                                 Id = "Bearer"
                             }
                         },
@@ -93,7 +99,10 @@ namespace Service.Auth
             });
         }
 
-        private static void ConfigSerilog(WebApplicationBuilder builder) => builder.UseSerilogLogging();
+        private static void ConfigSerilog(WebApplicationBuilder builder)
+        {
+            builder.UseSerilogLogging();
+        }
 
         private static void ConfigApp(WebApplicationBuilder builder)
         {

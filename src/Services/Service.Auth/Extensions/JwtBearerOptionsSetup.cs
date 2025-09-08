@@ -6,14 +6,9 @@ using Service.Auth.Options;
 
 namespace Service.Auth.Extensions
 {
-    internal sealed class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
+    internal sealed class JwtBearerOptionsSetup(IOptions<JwtOptions> jwtOptions) : IConfigureOptions<JwtBearerOptions>
     {
-        private readonly JwtOptions _jwtOptions;
-
-        public JwtBearerOptionsSetup(IOptions<JwtOptions> jwtOptions)
-        {
-            _jwtOptions = jwtOptions.Value;
-        }
+        private readonly JwtOptions _jwtOptions = jwtOptions.Value;
 
         public void Configure(JwtBearerOptions options)
         {

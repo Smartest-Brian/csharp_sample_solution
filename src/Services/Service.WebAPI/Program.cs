@@ -98,7 +98,10 @@ namespace Service.WebAPI
             });
         }
 
-        private static void ConfigSerilog(WebApplicationBuilder builder) => builder.UseSerilogLogging();
+        private static void ConfigSerilog(WebApplicationBuilder builder)
+        {
+            builder.UseSerilogLogging();
+        }
 
         private static void ConfigApp(WebApplicationBuilder builder)
         {
