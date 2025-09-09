@@ -1,7 +1,8 @@
 using Library.Core.Logging;
 using Library.Core.Middlewares;
 using Library.Database.Contexts.Public;
-using Library.RabbitMQ;
+using Library.RabbitMQ.Options;
+using Library.RabbitMQ.Services;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,7 @@ internal static class Program
         ConfigBasic(builder);
         ConfigDatabase(builder);
         ConfigQuartz(builder);
+        ConfigRabbitMq(builder);
         ConfigSerilog(builder);
         ConfigApp(builder);
     }
@@ -75,13 +77,26 @@ internal static class Program
         builder.UseSerilogLogging();
     }
 
-    private static void ConfigRmqEventDispatcher(WebApplication app)
+    private static void ConfigRabbitMq(WebApplicationBuilder builder)
     {
-        // 取得 Quartz Scheduler 並註冊 RabbitMQ 事件
+        builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
+        builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
+    }
+
+    private static void ConfigRabbitMqSubscriber(WebApplication app)
+    {
         ISchedulerFactory schedulerFactory = app.Services.GetRequiredService<ISchedulerFactory>();
         IScheduler scheduler = schedulerFactory.GetScheduler().GetAwaiter().GetResult();
 
-        RmqEventDispatcher.Register("key.change_country_table", async () => { await scheduler.TriggerJob(new JobKey("JOB-CountryUpdated", "STATIC")); });
+        IRabbitMqService rabbitMqService = app.Services.GetRequiredService<IRabbitMqService>();
+        rabbitMqService.Subscribe("exchange.change_country_table", "queue.change_country_table", "key.change_country_table");
+        rabbitMqService.MessageReceived += async (routingKey, _) =>
+        {
+            if (routingKey == "key.change_country_table")
+            {
+                await scheduler.TriggerJob(new JobKey("JOB-CountryUpdated", "STATIC"));
+            }
+        };
     }
 
     private static void ConfigApp(WebApplicationBuilder builder)
@@ -97,7 +112,7 @@ internal static class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        ConfigRmqEventDispatcher(app);
+        ConfigRabbitMqSubscriber(app);
 
         app.MapControllers();
         app.Run();
