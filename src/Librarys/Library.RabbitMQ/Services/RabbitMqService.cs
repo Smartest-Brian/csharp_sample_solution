@@ -49,11 +49,11 @@ public class RabbitMqService(IOptions<RabbitMqOptions> options) : IRabbitMqServi
         return Task.CompletedTask;
     }
 
-    public void Subscribe(string exchange, string queue, params string[] routingKeys)
+    public void Subscribe(string exchange, string queue, string exchangeType, params string[] routingKeys)
     {
         IModel channel = GetOrCreateChannel();
 
-        channel.ExchangeDeclare(exchange, ExchangeType.Topic, durable: true);
+        channel.ExchangeDeclare(exchange, exchangeType, durable: true);
         channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false);
         foreach (string routingKey in routingKeys)
         {

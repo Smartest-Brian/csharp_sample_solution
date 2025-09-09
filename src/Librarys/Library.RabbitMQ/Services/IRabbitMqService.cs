@@ -10,8 +10,9 @@ public interface IRabbitMqService
     /// </summary>
     /// <param name="exchange">Exchange name.</param>
     /// <param name="queue">Queue name.</param>
+    /// <param name="exchangeType">Exchange type (e.g. direct, topic).</param>
     /// <param name="routingKeys">Routing keys to bind.</param>
-    void Subscribe(string exchange, string queue, params string[] routingKeys);
+    void Subscribe(string exchange, string queue, string exchangeType, params string[] routingKeys);
 
     /// <summary>
     ///     Event raised when a message is received from RabbitMQ.

@@ -7,6 +7,7 @@ using Library.RabbitMQ.Services;
 using Microsoft.EntityFrameworkCore;
 
 using Quartz;
+using RabbitMQ.Client;
 
 using Service.Job.Jobs;
 
@@ -89,7 +90,11 @@ internal static class Program
         IScheduler scheduler = schedulerFactory.GetScheduler().GetAwaiter().GetResult();
 
         IRabbitMqService rabbitMqService = app.Services.GetRequiredService<IRabbitMqService>();
-        rabbitMqService.Subscribe("exchange.change_country_table", "queue.change_country_table", "key.change_country_table");
+        rabbitMqService.Subscribe(
+            "exchange.change_country_table",
+            "queue.change_country_table",
+            ExchangeType.Direct,
+            "key.change_country_table");
         rabbitMqService.MessageReceived += async (routingKey, _) =>
         {
             if (routingKey == "key.change_country_table")
