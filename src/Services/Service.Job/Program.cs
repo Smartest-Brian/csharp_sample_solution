@@ -95,11 +95,12 @@ internal static class Program
             "queue.change_country_table",
             ExchangeType.Direct,
             "key.change_country_table");
-        rabbitMqService.MessageReceived += async (routingKey, _) =>
+        rabbitMqService.MessageReceived += async (routingKey, message) =>
         {
             if (routingKey == "key.change_country_table")
             {
-                await scheduler.TriggerJob(new JobKey("JOB-CountryUpdated", "STATIC"));
+                JobDataMap data = new() { ["message"] = message };
+                await scheduler.TriggerJob(new JobKey("JOB-CountryUpdated", "STATIC"), data);
             }
         };
     }
