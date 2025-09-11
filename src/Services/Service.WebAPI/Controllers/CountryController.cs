@@ -60,7 +60,7 @@ public class CountryController(
     {
         logger.LogInformation("Inserting country with request: {@Request}", request);
         Result<CountryInfo> result = await countryService.AddCountryAsync(request);
-        if (result.Success && result.Data != null)
+        if (result is { Success: true, Data: not null })
         {
             string message = JsonSerializer.Serialize(result.Data);
             await rabbitMqService.PublishAsync("exchange.change_country_table", "key.change_country_table", message);
