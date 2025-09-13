@@ -22,6 +22,11 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq   # 保留資料持久化；不要再綁 definitions 檔
 
@@ -48,15 +53,17 @@ services:
       - postgres
       - rabbitmq
 
-#  job:
-#    build:
-#      context: .
-#      dockerfile: src/Services/Service.Job/Dockerfile
-#    environment:
-#      ASPNETCORE_ENVIRONMENT: Docker
-#    depends_on:
-#      - postgres
-#      - rabbitmq
+  job:
+    build:
+      context: .
+      dockerfile: src/Services/Service.Job/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_started
 
 #  graphql:
 #    build:
