@@ -30,7 +30,7 @@ internal static class Program
     private static void ConfigDatabase(WebApplicationBuilder builder)
     {
         string? connectionString = builder.Configuration.GetConnectionString("PostgreSql");
-        if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
+        if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException("Connection String Not Found.");
 
         builder.Services.AddDbContext<PublicDbContext>(opt =>
         {

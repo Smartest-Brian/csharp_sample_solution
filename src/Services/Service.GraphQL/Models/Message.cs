@@ -3,7 +3,7 @@ namespace Service.GraphQL.Models;
 public record Message(int Id, string Text, DateTime CreatedAtUtc);
 
 /// <summary>
-/// 簡單的 In-Memory 儲存
+///     簡單的 In-Memory 儲存
 /// </summary>
 public static class MessageStore
 {
@@ -14,7 +14,7 @@ public static class MessageStore
 
     public static Message Add(string text)
     {
-        var msg = new Message(_nextId++, text, DateTime.UtcNow);
+        Message msg = new(_nextId++, text, DateTime.UtcNow);
         _messages.Add(msg);
         return msg;
     }
