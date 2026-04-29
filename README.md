@@ -1,23 +1,24 @@
 # csharp_sample_solution
 
----
+## Create Solution
 
-# command line
-
-## create Solution
-
+```bash
 dotnet new sln -n Solution
+```
 
-## create a service WebAPI controller project
+## Create services
 
+```bash
 dotnet new webapi -n Service.WebAPI --use-controllers -o src/Services/Service.WebAPI -f net9.0
 
 dotnet new webapi -n Service.GraphQL -o src/Services/Service.GraphQL -f net9.0
 
 dotnet new webapi -n Service.Job -o src/Services/Service.Job -f net9.0
+```
 
-## create a library
+## Create libraries
 
+```bash
 dotnet new classlib -n Library.Core -o src/Librarys/Library.Core -f net9.0
 
 dotnet new classlib -n Library.Database -o src/Librarys/Library.Database -f net9.0
@@ -27,22 +28,25 @@ dotnet new classlib -n Library.ApiClient -o src/Librarys/Library.ApiClient -f ne
 dotnet new classlib -n Library.RabbitMQ -o src/Librarys/Library.RabbitMQ -f net9.0
 
 dotnet new classlib -n Library.Quartz -o src/Librarys/Library.Quartz -f net9.0
+```
 
-## add a project to the solution
+## Add a project to the solution
 
-dotnet sln Solution.sln add src/Services/Service.WebAPI/Service.WebAPI.csproj
+```bash
+dotnet sln Solution.sln add src/Services/Service.WebAPI/Service.WebAPI.csproj --solution-folder services
 
-dotnet sln Solution.sln add src/Librarys/Library.Core/Library.Core.csproj
+dotnet sln Solution.sln add src/Librarys/Library.Core/Library.Core.csproj --solution-folder libraries
+```
 
-## reference
+## References
 
+```bash
 dotnet add src/Services/Service.WebAPI/Service.WebAPI.csproj reference src/Librarys/Library.Database/Library.Database.csproj
 
 dotnet add src/Services/Service.WebAPI/Service.WebAPI.csproj reference src/Librarys/Library.Core/Library.Core.csproj
+```
 
----
-
-## format
+## Format
 
 ```bash
 # 格式化整個 solution
@@ -66,11 +70,15 @@ dotnet format whitespace
 
 ---
 
-## EF CLI install (once)
+## EF CLI install (do once)
 
+```bash
 dotnet tool install --global dotnet-ef
+```
 
 ## run EF CLI in Library.Database path
+
+create context by schema
 
 ### public
 
@@ -106,39 +114,39 @@ Npgsql.EntityFrameworkCore.PostgreSQL \
 --force
 ```
 
-create context by schema
-
----
-
 ## docker
 
+```bash
 docker build -t webapi -f src/Services/Service.WebAPI/Dockerfile .
 
 docker build -t schedulejob -f src/Services/Service.Job/Dockerfile .
 
 docker run -p 8080:8080 webapi
+```
 
 ## docker-compose
 
 ### build container
 
+```bash
 docker-compose up -d
+```
 
 ### clean container
 
-停止並刪除容器（保留 volume 與網路）
-
+```bash
+# 停止並刪除容器（保留 volume 與網路）
 docker-compose down
 
-停止並刪除容器 + volume（清空資料）
-
+# 停止並刪除容器 + volume（清空資料）
 docker-compose down -v
+```
 
 ### clean completely (image、volume、network) include other images
 
+```bash
 docker system prune -a --volumes
-
----
+```
 
 # describe
 
@@ -155,7 +163,9 @@ openssl rand -base64 64 | tr -d '\n'
 
 ## Service.WebAPI
 
+```bash
 dotnet add package Swashbuckle.AspNetCore -v 6.7.0
+```
 
 使用 Controller 執行 RESTful API
 
@@ -165,9 +175,11 @@ dotnet add package Swashbuckle.AspNetCore -v 6.7.0
 
 ## Service.GraphQL
 
+```bash
 dotnet add package HotChocolate.AspNetCore --version 13.9.14
 
 dotnet add package HotChocolate.Subscriptions.InMemory --version 13.9.14
+```
 
 如果要佈署到多執行個體，請把上面的 InMemory 換成 Redis 或其他 provider，並在程式碼中使用相對應的 AddRedisSubscriptions()
 等方法。
