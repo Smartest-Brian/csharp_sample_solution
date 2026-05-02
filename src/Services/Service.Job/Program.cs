@@ -1,12 +1,10 @@
 using Library.Core.Logging;
 using Library.Core.Middlewares;
-using Library.Database.Contexts.Public;
 using Library.RabbitMQ.Options;
 using Library.RabbitMQ.Services;
 
-using Microsoft.EntityFrameworkCore;
-
 using Quartz;
+
 using RabbitMQ.Client;
 
 using Service.Job.Jobs;
@@ -20,7 +18,6 @@ internal static class Program
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
         ConfigBasic(builder);
-        ConfigDatabase(builder);
         ConfigQuartz(builder);
         ConfigRabbitMq(builder);
         ConfigSerilog(builder);
@@ -31,18 +28,6 @@ internal static class Program
     {
         builder.Services.AddControllers();
         builder.Services.AddCors();
-    }
-
-    private static void ConfigDatabase(WebApplicationBuilder builder)
-    {
-        string? connectionString = builder.Configuration.GetConnectionString("PostgreSql");
-        if (string.IsNullOrWhiteSpace(connectionString)) throw new InvalidOperationException($"Connection String Not Found.");
-
-        builder.Services.AddDbContext<PublicDbContext>(opt =>
-        {
-            opt.UseNpgsql(connectionString);
-            opt.EnableSensitiveDataLogging();
-        });
     }
 
     private static void ConfigQuartz(WebApplicationBuilder builder)
@@ -58,7 +43,7 @@ internal static class Program
             q.AddTrigger(opts => opts
                 .ForJob(timeReportJobKey)
                 .WithIdentity(timeReportTriggerKey)
-                .WithCronSchedule("0 * * * * ?")
+                .WithCronSchedule("0 0 * * * ?")
             );
 
             JobKey countryUpdatedJobKey = new("JOB-CountryUpdated", "STATIC");
