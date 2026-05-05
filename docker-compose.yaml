@@ -1,12 +1,23 @@
 version: "3.9"
 services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth
+      - webapi
+      - graphql
+
   postgres:
     image: postgres:16
     environment:
       POSTGRES_USER: db_admin
       POSTGRES_PASSWORD: P@ssw0rd
       POSTGRES_DB: csharp_sample_solution_db
-    ports: [ "5432:5432" ]
     volumes:
       - pg_data:/var/lib/postgresql/data # 把 pg_data 掛到容器內 data 目錄
       - ./infra/db/postgres/init:/docker-entrypoint-initdb.d:ro
@@ -16,9 +27,6 @@ services:
       context: src/Librarys/Library.RabbitMQ
       dockerfile: Dockerfile
     container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
@@ -36,8 +44,6 @@ services:
       dockerfile: src/Services/Service.Auth/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
-    ports:
-      - "8080:8080"
     depends_on:
       - postgres
 
@@ -47,8 +53,6 @@ services:
       dockerfile: src/Services/Service.WebAPI/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
-    ports:
-      - "8081:8080"
     depends_on:
       - postgres
       - rabbitmq
@@ -71,8 +75,6 @@ services:
       dockerfile: src/Services/Service.GraphQL/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
-    ports:
-      - "8082:8080"
     depends_on:
       - postgres
 
