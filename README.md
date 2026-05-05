@@ -129,7 +129,12 @@ docker run -p 8080:8080 webapi
 ### build container
 
 ```bash
+# Build and Up all service
 docker-compose up -d
+
+# 針對特定服務進行 Build 與 Up
+docker-compose up -d --build {ServiceName}
+docker-compose up -d --build job
 ```
 
 ### clean container
