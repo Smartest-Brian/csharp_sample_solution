@@ -11,7 +11,7 @@ using Service.Auth.Services.Auth;
 namespace Service.Auth.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class AuthController(IAuthService authService) : ControllerBase
 {
     [HttpPost("register")]

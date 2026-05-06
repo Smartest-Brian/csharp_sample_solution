@@ -12,7 +12,7 @@ using Service.WebAPI.Services.Country;
 namespace Service.WebAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class CountryController(
     ILogger<CountryController> logger,
     IRabbitMqService rabbitMqService,

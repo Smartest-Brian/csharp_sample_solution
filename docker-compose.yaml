@@ -18,6 +18,7 @@ services:
       POSTGRES_USER: db_admin
       POSTGRES_PASSWORD: P@ssw0rd
       POSTGRES_DB: csharp_sample_solution_db
+    ports: [ "5432:5432" ]
     volumes:
       - pg_data:/var/lib/postgresql/data # 把 pg_data 掛到容器內 data 目錄
       - ./infra/db/postgres/init:/docker-entrypoint-initdb.d:ro
@@ -27,6 +28,9 @@ services:
       context: src/Librarys/Library.RabbitMQ
       dockerfile: Dockerfile
     container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
