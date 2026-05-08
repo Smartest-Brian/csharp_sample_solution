@@ -123,7 +123,11 @@ internal static class Program
         app.UseMiddleware<RequestIdMiddleware>();
         app.UseMiddleware<GlobalExceptionMiddleware>();
 
-        app.UseCors("AllowSpecificOrigin");
+        app.UseCors(x => x
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin()
+        );
 
         app.UseAuthentication();
         app.UseAuthorization();
